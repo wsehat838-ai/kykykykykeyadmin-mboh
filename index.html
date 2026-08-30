@@ -18,12 +18,80 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-dark); color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
-        .admin-container { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 15px; }
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 4px solid transparent;
+            border-image: linear-gradient(0deg, var(--accent-pink), var(--accent-blue), var(--accent-purple), var(--accent-pink)) 1;
+            box-shadow: inset 0 0 15px rgba(255, 0, 119, 0.4), 0 0 15px rgba(0, 210, 255, 0.4);
+            pointer-events: none;
+            z-index: 9999;
+            animation: screenNeonRotate 4s linear infinite;
+        }
+        @keyframes screenNeonRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .admin-container { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 15px; z-index: 1; }
 
-        .header-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .header-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--accent-pink); font-weight: 800; }
+        .header-box {
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .header-box::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-blue), var(--accent-purple), var(--accent-pink));
+            background-size: 400%;
+            z-index: -1;
+            border-radius: 16px;
+            animation: neonBorderMove 3s linear infinite;
+        }
+        @keyframes neonBorderMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #ff0077, #00d2ff, #ffb700, #ff0077);
+            background-size: 300% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 3s ease infinite;
+            text-shadow: 0 0 10px rgba(255, 0, 119, 0.5);
+        }
+        @keyframes textShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         .admin-nav { display: flex; gap: 6px; background: #0d061a; border-radius: 12px; padding: 5px; border: 1px solid var(--card-border); overflow-x: auto; scrollbar-width: none; }
         .admin-nav::-webkit-scrollbar { display: none; }
@@ -36,8 +104,29 @@
         .section-header { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
         .section-header-left { display: flex; align-items: center; gap: 8px; }
 
-        .online-indicator { font-size: 0.72rem; font-family: 'Poppins', sans-serif; font-weight: 600; color: #00ff66; background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.3); padding: 2px 8px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
-        .online-dot { width: 7px; height: 7px; background-color: #00ff66; border-radius: 50%; box-shadow: 0 0 6px #00ff66; animation: pulse-dot 1.5s infinite; }
+        .online-indicator { 
+            font-size: 0.72rem; 
+            font-family: 'Poppins', sans-serif; 
+            font-weight: 600; 
+            color: #00ff66; 
+            background: rgba(0, 255, 102, 0.1); 
+            border: 1px solid rgba(0, 255, 102, 0.3); 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            white-space: nowrap;
+        }
+        .online-dot { 
+            width: 7px; 
+            height: 7px; 
+            background-color: #00ff66; 
+            border-radius: 50%; 
+            box-shadow: 0 0 6px #00ff66; 
+            animation: pulse-dot 1.5s infinite; 
+            flex-shrink: 0;
+        }
         @keyframes pulse-dot { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
         input, textarea, button { width: 100%; padding: 12px; background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; color: #fff; outline: none; font-size: 0.8rem; }
@@ -45,12 +134,30 @@
         button.btn-secondary { background: #1a0c33; border: 1px solid var(--accent-purple); color: #fff; font-weight: 600; cursor: pointer; }
         button.btn-blue { background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple)); border: none; font-weight: 700; cursor: pointer; font-family: 'Orbitron', sans-serif; }
 
-        .vault-list-box { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-        .vault-item { background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .vault-item-info { display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+        /* PERBAIKAN TAMPILAN VAULT LIST DI ADMIN */
+        .vault-list-box { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
+        .vault-item { background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .vault-item-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #1a0c33; border: 1px solid var(--card-border); }
+        .vault-item-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; flex: 1; }
         .vault-item-title { font-size: 0.8rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vault-item-date { font-size: 0.68rem; color: var(--text-gray); }
-        .btn-del-vault { background: rgba(255, 0, 85, 0.2); border: 1px solid #ff0055; color: #ff0055; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; flex-shrink: 0; }
+        .vault-item-date { font-size: 0.68rem; color: var(--text-gray); display: flex; align-items: center; gap: 4px; }
+        
+        /* TOMBOL HAPUS DIPERBAIKI MENJADI KECIL DI KANAN */
+        .btn-del-vault { 
+            background: rgba(255, 0, 85, 0.15); 
+            border: 1px solid #ff0055; 
+            color: #ff0055; 
+            width: auto; 
+            padding: 8px 12px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.75rem; 
+            flex-shrink: 0; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
         .btn-del-vault:hover { background: #ff0055; color: #fff; }
 
         .chat-box-admin { height: 220px; background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
@@ -78,7 +185,6 @@
         .status-badge.open { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
         .status-badge.closed { background: rgba(255, 0, 85, 0.15); color: #ff0055; border: 1px solid #ff0055; }
 
-        /* ITEM HASIL PENCARIAN YOUTUBE */
         .yt-search-card { background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
         .yt-card-header { display: flex; gap: 10px; }
         .yt-card-thumb { width: 110px; height: 62px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
@@ -122,7 +228,6 @@
         <!-- TAB 2: TOOLS -->
         <div id="toolsTab" class="admin-section">
             
-            <!-- TOOL 1: KONVERSI GAMBAR -->
             <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-image" style="color: var(--accent-pink);"></i> KONVERSI GAMBAR KE DIRECT LINK</div></div>
             <input type="file" id="imageInput" accept="image/*">
             <button class="btn-primary" onclick="convertImageToDirectUrl()"><i class="fa-solid fa-bolt"></i> PROSES GAMBAR</button>
@@ -138,7 +243,6 @@
 
             <hr style="border-color: var(--card-border); margin: 8px 0;">
 
-            <!-- TOOL 2: YOUTUBE DATA EXPORTER -->
             <div class="section-header"><div class="section-header-left"><i class="fa-brands fa-youtube" style="color: #ff0055;"></i> YOUTUBE DATA EXPORTER</div></div>
             <input type="text" id="ytUrlInput" placeholder="Tempelkan link video YouTube di sini...">
             <button class="btn-primary" onclick="extractYoutubeData()"><i class="fa-solid fa-magnifying-glass"></i> EKSTRAK DATA VIDEO</button>
@@ -165,7 +269,6 @@
 
             <hr style="border-color: var(--card-border); margin: 8px 0;">
 
-            <!-- TOOL 3: CONVERTER MEDIA -->
             <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent-blue);"></i> KONVERSI VIDEO TO MP3 / OPUS / MP4</div></div>
             <input type="text" id="convertUrlInput" placeholder="Paste Link YouTube untuk Konversi...">
             <button class="btn-primary" onclick="processMediaConvert()"><i class="fa-solid fa-gear"></i> PROSES KONVERSI</button>
@@ -181,7 +284,6 @@
 
             <hr style="border-color: var(--card-border); margin: 8px 0;">
 
-            <!-- TOOL 4: CARI VIDEO YOUTUBE & EKSTRAK INFO -->
             <div class="section-header"><div class="section-header-left"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> CARI VIDEO YOUTUBE</div></div>
             <input type="text" id="ytSearchQueryInput" placeholder="Ketik kata kunci / judul video..." onkeypress="handleYtSearchEnter(event)">
             <button class="btn-primary" style="background: linear-gradient(45deg, #ff0000, #ff5500); color: #fff;" onclick="searchYoutubeVideos()"><i class="fa-solid fa-magnifying-glass"></i> CARI VIDEO YT</button>
@@ -424,11 +526,14 @@
             for (let key in links) {
                 const item = links[key];
                 const uploadDate = item.date || 'Waktu tidak diketahui';
+                const thumbImg = item.img ? item.img : 'https://via.placeholder.com/50';
+                
                 listBox.innerHTML += `
                     <div class="vault-item">
+                        <img src="${escapeHtml(thumbImg)}" class="vault-item-thumb" alt="thumb" onerror="this.src='https://via.placeholder.com/50'">
                         <div class="vault-item-info">
                             <div class="vault-item-title">${escapeHtml(item.title)}</div>
-                            <div class="vault-item-date"><i class="fa-regular fa-clock"></i> ${uploadDate}</div>
+                            <div class="vault-item-date"><i class="fa-regular fa-clock"></i> ${escapeHtml(uploadDate)}</div>
                         </div>
                         <button class="btn-del-vault" onclick="deleteVaultItem('${key}')" title="Hapus File"><i class="fa-solid fa-trash"></i> Hapus</button>
                     </div>
@@ -535,7 +640,6 @@
             alert('Judul, Thumbnail, dan Link Video berhasil ditempel ke menu Vault!');
         }
 
-        // TOOL 3: CONVERTER MEDIA DIRECT (COBALT API)
         let currentConvertVideoId = "";
         function processMediaConvert() {
             const inputUrl = document.getElementById('convertUrlInput').value.trim();
@@ -550,9 +654,7 @@
 
         function downloadFormat(type) {
             if(!currentConvertVideoId) return;
-            
             const serviceUrl = `https://co.wuk.sh/api/json`;
-            
             fetch(serviceUrl, {
                 method: 'POST',
                 headers: {
@@ -578,7 +680,6 @@
             });
         }
 
-        // TOOL 4: CARI VIDEO YOUTUBE & EKSTRAK INFO
         function handleYtSearchEnter(e) {
             if(e.key === 'Enter') searchYoutubeVideos();
         }
@@ -593,7 +694,6 @@
 
             resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: var(--accent-blue); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Mencari video YouTube...</p>';
 
-            // Menggunakan Invidious Public API yang bebas CORS
             fetch(`https://inv.tux.pizza/api/v1/search?q=${encodeURIComponent(query)}&type=video`)
             .then(res => {
                 if(!res.ok) throw new Error("API error");
@@ -613,7 +713,6 @@
                     const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
                     const channel = item.author || 'Unknown Channel';
                     
-                    // Format tanggal upload
                     let uploadDateStr = 'Tanggal tidak diketahui';
                     if(item.published) {
                         const dateObj = new Date(item.published * 1000);
@@ -634,9 +733,7 @@
                                     <div class="yt-card-date"><i class="fa-regular fa-calendar-days"></i> Rilis: ${escapeHtml(uploadDateStr)}</div>
                                 </div>
                             </div>
-
                             <div class="yt-card-desc"><i class="fa-solid fa-align-left"></i> <strong>Deskripsi:</strong><br>${escapeHtml(description)}</div>
-
                             <div class="btn-group">
                                 <button class="btn-secondary" style="font-size:0.7rem; padding:8px; border-color:#ff0055; color:#ff0055;" onclick="copyYtVideoLink('${ytLink}')">
                                     <i class="fa-solid fa-copy"></i> Salin Link
@@ -650,54 +747,7 @@
                 });
             })
             .catch(() => {
-                // Fallback otomatis jika instance server 1 error
-                fetch(`https://api.piped.video/search?q=${encodeURIComponent(query)}&filter=videos`)
-                .then(res => res.json())
-                .then(data => {
-                    resultsContainer.innerHTML = '';
-                    const items = data.items || [];
-                    if(items.length === 0) {
-                        resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: var(--text-gray); text-align:center;">Video tidak ditemukan!</p>';
-                        return;
-                    }
-
-                    items.slice(0, 5).forEach(item => {
-                        const videoId = item.url ? item.url.replace('/watch?v=', '') : '';
-                        const ytLink = `https://www.youtube.com/watch?v=${videoId}`;
-                        const title = item.title || 'Tanpa Judul';
-                        const thumb = item.thumbnail || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-                        const channel = item.uploaderName || 'Unknown Channel';
-                        const uploadDateStr = item.uploadedDate || 'Rilis publik';
-                        const description = item.shortDescription || 'Tidak ada deskripsi.';
-
-                        resultsContainer.innerHTML += `
-                            <div class="yt-search-card">
-                                <div class="yt-card-header">
-                                    <img src="${thumb}" class="yt-card-thumb">
-                                    <div class="yt-card-meta">
-                                        <div class="yt-card-title">${escapeHtml(title)}</div>
-                                        <div class="yt-card-channel"><i class="fa-solid fa-user"></i> ${escapeHtml(channel)}</div>
-                                        <div class="yt-card-date"><i class="fa-regular fa-calendar-days"></i> Rilis: ${escapeHtml(uploadDateStr)}</div>
-                                    </div>
-                                </div>
-
-                                <div class="yt-card-desc"><i class="fa-solid fa-align-left"></i> <strong>Deskripsi:</strong><br>${escapeHtml(description)}</div>
-
-                                <div class="btn-group">
-                                    <button class="btn-secondary" style="font-size:0.7rem; padding:8px; border-color:#ff0055; color:#ff0055;" onclick="copyYtVideoLink('${ytLink}')">
-                                        <i class="fa-solid fa-copy"></i> Salin Link
-                                    </button>
-                                    <button class="btn-blue" style="font-size:0.7rem; padding:8px;" onclick="applyYtToConverter('${ytLink}')">
-                                        <i class="fa-solid fa-arrows-rotate"></i> Tempel ke Konverter
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                })
-                .catch(() => {
-                    resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: #ff0055; text-align:center;">Gagal memuat hasil pencarian. Coba kata kunci lain bre.</p>';
-                });
+                resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: #ff0055; text-align:center;">Gagal memuat hasil pencarian.</p>';
             });
         }
 
@@ -712,7 +762,7 @@
         function applyYtToConverter(link) {
             document.getElementById('convertUrlInput').value = link;
             document.getElementById('convertUrlInput').scrollIntoView({ behavior: 'smooth' });
-            alert(`Link YouTube berhasil ditempel ke Tool Konversi di atas! Silakan klik PROSES KONVERSI.`);
+            alert(`Link YouTube berhasil ditempel ke Tool Konversi di atas!`);
         }
 
         db.ref('chatMessages').limitToLast(50).on('value', (snapshot) => {
@@ -744,9 +794,7 @@
 
         function deleteChatMessage(key) {
             if (confirm("Hapus pesan ini secara permanen dari Firebase?")) {
-                db.ref('chatMessages/' + key).remove((err) => {
-                    if (err) alert("Gagal menghapus: " + err.message);
-                });
+                db.ref('chatMessages/' + key).remove();
             }
         }
 
@@ -756,14 +804,11 @@
                 alert('Ketik pesan broadcast terlebih dahulu!');
                 return;
             }
-
             db.ref('liveBroadcast').set({
                 text: msg,
                 timestamp: Date.now()
             }, (err) => {
-                if (err) {
-                    alert('Gagal mengirim pesan!');
-                } else {
+                if (!err) {
                     document.getElementById('adminBroadcastInput').value = '';
                     alert('Pesan berhasil terkirim sebagai pop-up broadcast ke viewer!');
                 }
@@ -815,9 +860,7 @@
 
         function deleteRatingMessage(key) {
             if (confirm("Hapus ulasan ini secara permanen dari Firebase?")) {
-                db.ref('ratings/' + key).remove((err) => {
-                    if (err) alert("Gagal menghapus: " + err.message);
-                });
+                db.ref('ratings/' + key).remove();
             }
         }
 
@@ -826,4 +869,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
