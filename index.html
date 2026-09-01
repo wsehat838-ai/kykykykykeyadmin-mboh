@@ -22,13 +22,10 @@
         body {
             background-color: var(--bg-dark);
             color: #fff;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 25px;
-            position: relative;
-            overflow-x: hidden;
+            justify-content: center;
         }
         body::before {
             content: '';
@@ -46,7 +43,26 @@
             100% { filter: hue-rotate(360deg); }
         }
         
-        .admin-container { width: 100%; max-width: 650px; display: flex; flex-direction: column; gap: 15px; z-index: 1; }
+        .admin-container { 
+            width: 100%; 
+            max-width: 650px; 
+            height: 100vh;
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1; 
+        }
+
+        /* STICKY HEADER & NAV BAGIAN ATAS */
+        .sticky-top-wrapper {
+            position: sticky;
+            top: 0;
+            background: var(--bg-dark);
+            z-index: 100;
+            padding: 15px 15px 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
         .header-box {
             position: relative;
@@ -98,6 +114,16 @@
         .admin-nav-btn { flex: 0 0 auto; min-width: 80px; padding: 10px 12px; border: none; background: transparent; color: var(--text-gray); font-size: 0.72rem; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; white-space: nowrap; }
         .admin-nav-btn.active { background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple)); color: #fff; }
 
+        /* SCROLLABLE CONTENT SECTION */
+        .content-scrollable {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px 15px 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .admin-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px; display: none; flex-direction: column; gap: 12px; }
         .admin-section.active { display: flex; }
 
@@ -129,11 +155,12 @@
         }
         @keyframes pulse-dot { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        input, textarea, button { width: 100%; padding: 12px; background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; color: #fff; outline: none; font-size: 0.8rem; }
+        input, select, textarea, button { width: 100%; padding: 12px; background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; color: #fff; outline: none; font-size: 0.8rem; }
         button.btn-primary { background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple)); font-weight: 700; border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; }
         button.btn-secondary { background: #1a0c33; border: 1px solid var(--accent-purple); color: #fff; font-weight: 600; cursor: pointer; }
         button.btn-blue { background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple)); border: none; font-weight: 700; cursor: pointer; font-family: 'Orbitron', sans-serif; }
 
+        /* VAULT LIST */
         .vault-list-box { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
         .vault-item { background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 10px; }
         .vault-item-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #1a0c33; border: 1px solid var(--card-border); }
@@ -183,206 +210,224 @@
         .status-badge.open { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
         .status-badge.closed { background: rgba(255, 0, 85, 0.15); color: #ff0055; border: 1px solid #ff0055; }
 
-        .yt-search-card { background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .yt-card-header { display: flex; gap: 10px; }
-        .yt-card-thumb { width: 110px; height: 62px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
-        .yt-card-meta { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
-        .yt-card-title { font-size: 0.8rem; font-weight: 700; color: #fff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .yt-card-channel { font-size: 0.7rem; color: var(--accent-blue); font-weight: 600; }
-        .yt-card-date { font-size: 0.68rem; color: var(--text-gray); }
-        .yt-card-desc { font-size: 0.7rem; color: #ccc; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); padding: 8px; border-radius: 6px; max-height: 70px; overflow-y: auto; white-space: pre-line; margin-top: 2px; }
+        /* CANVAS PREVIEW STIKER */
+        #stickerCanvas { display: none; margin: 10px auto; max-width: 100%; border-radius: 10px; border: 1px dashed var(--accent-pink); }
     </style>
 </head>
 <body>
 
     <div class="admin-container">
 
-        <div class="header-box">
-            <div class="header-title"><i class="fa-solid fa-user-shield"></i> PRINDAPAN ADMIN</div>
-        </div>
-
-        <div class="admin-nav">
-            <button class="admin-nav-btn active" onclick="showAdminTab('vaultTab', this)"><i class="fa-solid fa-folder"></i> Vault</button>
-            <button class="admin-nav-btn" onclick="showAdminTab('toolsTab', this)"><i class="fa-solid fa-wrench"></i> Tools</button>
-            <button class="admin-nav-btn" onclick="showAdminTab('liveChatTab', this)"><i class="fa-solid fa-comments"></i> Live Chat</button>
-            <button class="admin-nav-btn" onclick="showAdminTab('infoAdminTab', this)"><i class="fa-solid fa-chart-line"></i> Rating</button>
-            <button class="admin-nav-btn" onclick="showAdminTab('controlTab', this)"><i class="fa-solid fa-sliders"></i> Control</button>
-        </div>
-
-        <!-- TAB 1: VAULT -->
-        <div id="vaultTab" class="admin-section active">
-            <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-plus-circle" style="color: var(--accent-pink);"></i> TAMBAH LINK BARU</div></div>
-            <input type="text" id="linkTitle" placeholder="Judul File / Game">
-            <input type="text" id="linkUrl" placeholder="URL Download Link">
-            <input type="text" id="linkImg" placeholder="URL Gambar Thumbnail (Direct Link)">
-            <button class="btn-primary" onclick="addLink()"><i class="fa-solid fa-floppy-disk"></i> SIMPAN FILE</button>
-
-            <hr style="border-color: var(--card-border); margin: 6px 0;">
-
-            <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-list-ul" style="color: var(--accent-blue);"></i> DAFTAR FILE UPLOADED</div></div>
-            <div class="vault-list-box" id="vaultListBox"></div>
-        </div>
-
-        <!-- TAB 2: TOOLS -->
-        <div id="toolsTab" class="admin-section">
-            
-            <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-image" style="color: var(--accent-pink);"></i> KONVERSI GAMBAR KE DIRECT LINK</div></div>
-            <input type="file" id="imageInput" accept="image/*">
-            <button class="btn-primary" onclick="convertImageToDirectUrl()"><i class="fa-solid fa-bolt"></i> PROSES GAMBAR</button>
-            
-            <div id="uploadResult" class="output-box">
-                <span style="color: var(--accent-blue); font-weight: 700;">Direct Data URL Berhasil Dibuat:</span>
-                <textarea id="directUrlResult" rows="3" readonly></textarea>
-                <div class="btn-group">
-                    <button class="btn-secondary" onclick="copyDirectUrl()"><i class="fa-solid fa-copy"></i> Salin Link</button>
-                    <button class="btn-blue" onclick="applyToThumbnail()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Tempel Ke Thumbnail</button>
-                </div>
+        <!-- STICKY HEADER & NAV -->
+        <div class="sticky-top-wrapper">
+            <div class="header-box">
+                <div class="header-title"><i class="fa-solid fa-user-shield"></i> PRINDAPAN ADMIN</div>
             </div>
 
-            <hr style="border-color: var(--card-border); margin: 8px 0;">
+            <div class="admin-nav">
+                <button class="admin-nav-btn active" onclick="showAdminTab('vaultTab', this)"><i class="fa-solid fa-folder"></i> Vault</button>
+                <button class="admin-nav-btn" onclick="showAdminTab('toolsTab', this)"><i class="fa-solid fa-wrench"></i> Tools</button>
+                <button class="admin-nav-btn" onclick="showAdminTab('liveChatTab', this)"><i class="fa-solid fa-comments"></i> Live Chat</button>
+                <button class="admin-nav-btn" onclick="showAdminTab('infoAdminTab', this)"><i class="fa-solid fa-chart-line"></i> Rating</button>
+                <button class="admin-nav-btn" onclick="showAdminTab('controlTab', this)"><i class="fa-solid fa-sliders"></i> Control</button>
+            </div>
+        </div>
 
-            <div class="section-header"><div class="section-header-left"><i class="fa-brands fa-youtube" style="color: #ff0055;"></i> YOUTUBE DATA EXPORTER</div></div>
-            <input type="text" id="ytUrlInput" placeholder="Tempelkan link video YouTube di sini...">
-            <button class="btn-primary" onclick="extractYoutubeData()"><i class="fa-solid fa-magnifying-glass"></i> EKSTRAK DATA VIDEO</button>
+        <!-- CONTENT BISA DI-SCROLL -->
+        <div class="content-scrollable">
 
-            <div id="ytResult" class="output-box">
-                <strong style="color: var(--accent-blue);">Judul Video:</strong>
-                <input type="text" id="ytTitleResult" readonly>
+            <!-- TAB 1: VAULT -->
+            <div id="vaultTab" class="admin-section active">
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-plus-circle" style="color: var(--accent-pink);"></i> TAMBAH LINK BARU</div></div>
+                <input type="text" id="linkTitle" placeholder="Judul File / Game">
+                <input type="text" id="linkUrl" placeholder="URL Download Link">
+                <input type="text" id="linkImg" placeholder="URL Gambar Thumbnail (Direct Link)">
+                <button class="btn-primary" onclick="addLink()"><i class="fa-solid fa-floppy-disk"></i> SIMPAN FILE</button>
+
+                <hr style="border-color: var(--card-border); margin: 6px 0;">
+
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-list-ul" style="color: var(--accent-blue);"></i> DAFTAR FILE UPLOADED</div></div>
+                <div class="vault-list-box" id="vaultListBox"></div>
+            </div>
+
+            <!-- TAB 2: TOOLS -->
+            <div id="toolsTab" class="admin-section">
                 
-                <strong style="color: var(--accent-blue);">Thumbnail HD Direct URL:</strong>
-                <div style="display: flex; gap: 6px;">
-                    <input type="text" id="ytThumbResult" readonly>
-                    <button class="btn-secondary" style="width: auto; padding: 0 12px;" onclick="downloadThumbnail()"><i class="fa-solid fa-download"></i> Unduh</button>
-                </div>
-
-                <div id="thumbPreviewBox" style="margin-top: 4px; text-align: center;">
-                    <img id="ytThumbPreviewImage" src="" style="max-width: 100%; height: 130px; object-fit: cover; border-radius: 8px; border: 1px solid var(--card-border); display: none;">
-                </div>
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-image" style="color: var(--accent-pink);"></i> KONVERSI GAMBAR KE DIRECT LINK</div></div>
+                <input type="file" id="imageInput" accept="image/*">
+                <button class="btn-primary" onclick="convertImageToDirectUrl()"><i class="fa-solid fa-bolt"></i> PROSES GAMBAR</button>
                 
-                <strong style="color: var(--accent-blue);">Deskripsi Video:</strong>
-                <textarea id="ytDescResult" rows="2" readonly></textarea>
-                
-                <button class="btn-blue" onclick="applyYtDataToVault()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Gunakan Data Ini Di Vault</button>
-            </div>
-
-            <hr style="border-color: var(--card-border); margin: 8px 0;">
-
-            <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent-blue);"></i> KONVERSI VIDEO TO MP3 / OPUS / MP4</div></div>
-            <input type="text" id="convertUrlInput" placeholder="Paste Link YouTube untuk Konversi...">
-            <button class="btn-primary" onclick="processMediaConvert()"><i class="fa-solid fa-gear"></i> PROSES KONVERSI</button>
-
-            <div id="convertResultBox" class="output-box">
-                <strong style="color: var(--accent-pink);">Pilih Format Unduhan:</strong>
-                <div class="btn-group">
-                    <button class="btn-secondary" onclick="downloadFormat('mp3')"><i class="fa-solid fa-music"></i> Audio MP3</button>
-                    <button class="btn-secondary" onclick="downloadFormat('opus')"><i class="fa-solid fa-file-audio"></i> Audio OPUS</button>
-                    <button class="btn-blue" onclick="downloadFormat('mp4')"><i class="fa-solid fa-video"></i> Video MP4</button>
-                </div>
-            </div>
-
-            <hr style="border-color: var(--card-border); margin: 8px 0;">
-
-            <div class="section-header"><div class="section-header-left"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> CARI VIDEO YOUTUBE</div></div>
-            <input type="text" id="ytSearchQueryInput" placeholder="Ketik kata kunci / judul video..." onkeypress="handleYtSearchEnter(event)">
-            <button class="btn-primary" style="background: linear-gradient(45deg, #ff0000, #ff5500); color: #fff;" onclick="searchYoutubeVideos()"><i class="fa-solid fa-magnifying-glass"></i> CARI VIDEO YT</button>
-
-            <div id="ytSearchResults" style="display: flex; flex-direction: column; gap: 10px; margin-top: 5px;"></div>
-
-        </div>
-
-        <!-- TAB 3: LIVE CHAT -->
-        <div id="liveChatTab" class="admin-section">
-            <div class="section-header">
-                <div class="section-header-left">
-                    <i class="fa-solid fa-comments" style="color: var(--accent-blue);"></i> MONITOR LIVE CHAT VIEWER
-                </div>
-                <div class="online-indicator" id="onlineCountBadge">
-                    <div class="online-dot"></div> <span id="onlineCountText">0 Online</span>
-                </div>
-            </div>
-            
-            <div class="chat-box-admin" id="adminChatBox"></div>
-            
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
-                <input type="text" id="adminBroadcastInput" placeholder="Ketik pesan broadcast untuk dikirim ke viewer...">
-                <button class="btn-primary" onclick="sendAdminBroadcast()"><i class="fa-solid fa-paper-plane"></i> KIRIM POP-UP BROADCAST</button>
-            </div>
-        </div>
-
-        <!-- TAB 4: RATING -->
-        <div id="infoAdminTab" class="admin-section">
-            <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-star" style="color: #ffb700;"></i> REPUTASI RATING WEB</div></div>
-            
-            <div class="rating-summary-box">
-                <div>
-                    <div style="font-size: 0.75rem; color: var(--text-gray);">Rata-rata Rating</div>
-                    <div class="avg-rating" id="avgRatingValue">0.0 <i class="fa-solid fa-star"></i></div>
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-gray);" id="totalReviewsCount">0 Ulasan</div>
-            </div>
-
-            <div class="section-header" style="margin-top: 5px;"><div class="section-header-left"><i class="fa-solid fa-comment-dots" style="color: var(--accent-blue);"></i> SARAN & KRITIK USER</div></div>
-            <div class="feedback-list" id="feedbackList"></div>
-        </div>
-
-        <!-- TAB 5: CONTROL -->
-        <div id="controlTab" class="admin-section">
-            <div class="control-card">
-                <div class="section-header">
-                    <div class="section-header-left">
-                        <i class="fa-solid fa-power-off" style="color: #ff0055;"></i> AKSES WEB VIEWER
-                    </div>
-                    <div id="serverStatusBadge" class="status-badge open">ONLINE</div>
-                </div>
-                <p style="font-size: 0.72rem; color: var(--text-gray);">Tutup akses penuh web viewer dengan tampilan khusus "Server tutup, kembali lagi tahun depan".</p>
-                <div class="btn-group">
-                    <button class="btn-primary" style="background: #00c853;" onclick="setServerAccess(true)">
-                        <i class="fa-solid fa-door-open"></i> OPEN AKSES
-                    </button>
-                    <button class="btn-primary" style="background: #ff0055;" onclick="setServerAccess(false)">
-                        <i class="fa-solid fa-door-closed"></i> CLOSE AKSES
-                    </button>
-                </div>
-            </div>
-
-            <hr style="border-color: var(--card-border); margin: 2px 0;">
-
-            <div class="control-card">
-                <div class="section-header">
-                    <div class="section-header-left">
-                        <i class="fa-solid fa-ghost" style="color: #ff6600;"></i> SPAM HALLOWEEN EMOJI PRANK
+                <div id="uploadResult" class="output-box">
+                    <span style="color: var(--accent-blue); font-weight: 700;">Direct Data URL Berhasil Dibuat:</span>
+                    <textarea id="directUrlResult" rows="3" readonly></textarea>
+                    <div class="btn-group">
+                        <button class="btn-secondary" onclick="copyDirectUrl()"><i class="fa-solid fa-copy"></i> Salin Link</button>
+                        <button class="btn-blue" onclick="applyToThumbnail()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Tempel Ke Thumbnail</button>
                     </div>
                 </div>
-                <p style="font-size: 0.72rem; color: var(--text-gray);">Hujani seluruh layar viewer dengan emoji Halloween acak (berbagai ukuran besar/kecil).</p>
-                <button class="btn-primary" style="background: linear-gradient(45deg, #ff6600, #9900cc);" onclick="triggerHalloweenPrank()">
-                    <i class="fa-solid fa-spaghetti-monster-flying"></i> SEBAR HUJAN EMOJI HALLOWEEN!
-                </button>
+
+                <hr style="border-color: var(--card-border); margin: 8px 0;">
+
+                <div class="section-header"><div class="section-header-left"><i class="fa-brands fa-youtube" style="color: #ff0055;"></i> YOUTUBE DATA EXPORTER</div></div>
+                <input type="text" id="ytUrlInput" placeholder="Tempelkan link video YouTube di sini...">
+                <button class="btn-primary" onclick="extractYoutubeData()"><i class="fa-solid fa-magnifying-glass"></i> EKSTRAK DATA VIDEO</button>
+
+                <div id="ytResult" class="output-box">
+                    <strong style="color: var(--accent-blue);">Judul Video:</strong>
+                    <input type="text" id="ytTitleResult" readonly>
+                    
+                    <strong style="color: var(--accent-blue);">Thumbnail HD Direct URL:</strong>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="text" id="ytThumbResult" readonly>
+                        <button class="btn-secondary" style="width: auto; padding: 0 12px;" onclick="downloadThumbnail()"><i class="fa-solid fa-download"></i> Unduh</button>
+                    </div>
+
+                    <div id="thumbPreviewBox" style="margin-top: 4px; text-align: center;">
+                        <img id="ytThumbPreviewImage" src="" style="max-width: 100%; height: 130px; object-fit: cover; border-radius: 8px; border: 1px solid var(--card-border); display: none;">
+                    </div>
+                    
+                    <strong style="color: var(--accent-blue);">Deskripsi Video:</strong>
+                    <textarea id="ytDescResult" rows="2" readonly></textarea>
+                    
+                    <button class="btn-blue" onclick="applyYtDataToVault()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Gunakan Data Ini Di Vault</button>
+                </div>
+
+                <hr style="border-color: var(--card-border); margin: 8px 0;">
+
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent-blue);"></i> KONVERSI VIDEO TO MP3 / OPUS / MP4</div></div>
+                <input type="text" id="convertUrlInput" placeholder="Paste Link YouTube untuk Konversi...">
+                <button class="btn-primary" onclick="processMediaConvert()"><i class="fa-solid fa-gear"></i> PROSES KONVERSI</button>
+
+                <div id="convertResultBox" class="output-box">
+                    <strong style="color: var(--accent-pink);">Pilih Format Unduhan:</strong>
+                    <div class="btn-group">
+                        <button class="btn-secondary" onclick="downloadFormat('mp3')"><i class="fa-solid fa-music"></i> Audio MP3</button>
+                        <button class="btn-secondary" onclick="downloadFormat('opus')"><i class="fa-solid fa-file-audio"></i> Audio OPUS</button>
+                        <button class="btn-blue" onclick="downloadFormat('mp4')"><i class="fa-solid fa-video"></i> Video MP4</button>
+                    </div>
+                </div>
+
+                <hr style="border-color: var(--card-border); margin: 8px 0;">
+
+                <!-- FITUR BARU: TEKS KE STIKER (PENGGANTI CARI VIDEO YT) -->
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-note-sticky" style="color: #ffb700;"></i> GENERATOR TEKS KE STIKER</div></div>
+                <input type="text" id="stickerTextInput" placeholder="Ketik teks stiker di sini...">
+                <select id="stickerStyleSelect">
+                    <option value="neon">Gaya: Cyber Neon Glow</option>
+                    <option value="gold">Gaya: Gold Cyberpunk</option>
+                    <option value="comic">Gaya: Comic Meme</option>
+                </select>
+                <button class="btn-primary" style="background: linear-gradient(45deg, #ffb700, #ff0077);" onclick="generateTextSticker()"><i class="fa-solid fa-wand-magic-sparkles"></i> BUAT STIKER</button>
+
+                <canvas id="stickerCanvas" width="512" height="512"></canvas>
+                <div id="stickerResultBox" class="output-box">
+                    <span style="color: #ffb700; font-weight: 700;">Stiker Berhasil Dibuat!</span>
+                    <div class="btn-group">
+                        <button class="btn-blue" onclick="downloadSticker()"><i class="fa-solid fa-download"></i> Unduh Stiker (PNG)</button>
+                        <button class="btn-secondary" onclick="applyStickerToVault()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Pakai Di Thumbnail</button>
+                    </div>
+                </div>
+
             </div>
 
-            <hr style="border-color: var(--card-border); margin: 2px 0;">
-
-            <div class="control-card">
+            <!-- TAB 3: LIVE CHAT -->
+            <div id="liveChatTab" class="admin-section">
                 <div class="section-header">
                     <div class="section-header-left">
-                        <i class="fa-solid fa-palette" style="color: var(--accent-blue);"></i> KONTROL TEMA BACKGROUND VIEWER
+                        <i class="fa-solid fa-comments" style="color: var(--accent-blue);"></i> MONITOR LIVE CHAT VIEWER
+                    </div>
+                    <div class="online-indicator" id="onlineCountBadge">
+                        <div class="online-dot"></div> <span id="onlineCountText">0 Online</span>
                     </div>
                 </div>
                 
-                <p style="font-size: 0.72rem; color: var(--text-gray);">Quick Theme Switch:</p>
-                <div class="btn-group">
-                    <button class="btn-secondary" onclick="setViewerThemeMode('dark')">
-                        <i class="fa-solid fa-moon"></i> Dark Mode
-                    </button>
-                    <button class="btn-secondary" style="background: #e6e6e6; color: #000; border-color: #ccc;" onclick="setViewerThemeMode('light')">
-                        <i class="fa-solid fa-sun" style="color: #ff9900;"></i> Light Mode
+                <!-- FITUR FILTER LIVE CHAT -->
+                <input type="text" id="chatFilterInput" placeholder="🔍 Cari / Filter pesan viewer..." onkeyup="filterLiveChat()">
+
+                <div class="chat-box-admin" id="adminChatBox"></div>
+                
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <input type="text" id="adminBroadcastInput" placeholder="Ketik pesan broadcast untuk dikirim ke viewer...">
+                    <button class="btn-primary" onclick="sendAdminBroadcast()"><i class="fa-solid fa-paper-plane"></i> KIRIM POP-UP BROADCAST</button>
+                </div>
+            </div>
+
+            <!-- TAB 4: RATING -->
+            <div id="infoAdminTab" class="admin-section">
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-star" style="color: #ffb700;"></i> REPUTASI RATING WEB</div></div>
+                
+                <div class="rating-summary-box">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-gray);">Rata-rata Rating</div>
+                        <div class="avg-rating" id="avgRatingValue">0.0 <i class="fa-solid fa-star"></i></div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-gray);" id="totalReviewsCount">0 Ulasan</div>
+                </div>
+
+                <div class="section-header" style="margin-top: 5px;"><div class="section-header-left"><i class="fa-solid fa-comment-dots" style="color: var(--accent-blue);"></i> SARAN & KRITIK USER</div></div>
+                <div class="feedback-list" id="feedbackList"></div>
+            </div>
+
+            <!-- TAB 5: CONTROL -->
+            <div id="controlTab" class="admin-section">
+                <div class="control-card">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fa-solid fa-power-off" style="color: #ff0055;"></i> AKSES WEB VIEWER
+                        </div>
+                        <div id="serverStatusBadge" class="status-badge open">ONLINE</div>
+                    </div>
+                    <p style="font-size: 0.72rem; color: var(--text-gray);">Tutup akses penuh web viewer dengan tampilan khusus "Server tutup, kembali lagi tahun depan".</p>
+                    <div class="btn-group">
+                        <button class="btn-primary" style="background: #00c853;" onclick="setServerAccess(true)">
+                            <i class="fa-solid fa-door-open"></i> OPEN AKSES
+                        </button>
+                        <button class="btn-primary" style="background: #ff0055;" onclick="setServerAccess(false)">
+                            <i class="fa-solid fa-door-closed"></i> CLOSE AKSES
+                        </button>
+                    </div>
+                </div>
+
+                <hr style="border-color: var(--card-border); margin: 2px 0;">
+
+                <div class="control-card">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fa-solid fa-ghost" style="color: #ff6600;"></i> SPAM HALLOWEEN EMOJI PRANK
+                        </div>
+                    </div>
+                    <p style="font-size: 0.72rem; color: var(--text-gray);">Hujani seluruh layar viewer dengan emoji Halloween acak (berbagai ukuran besar/kecil).</p>
+                    <button class="btn-primary" style="background: linear-gradient(45deg, #ff6600, #9900cc);" onclick="triggerHalloweenPrank()">
+                        <i class="fa-solid fa-spaghetti-monster-flying"></i> SEBAR HUJAN EMOJI HALLOWEEN!
                     </button>
                 </div>
 
-                <p style="font-size: 0.72rem; color: var(--text-gray); margin-top: 6px;">Custom Color Picker:</p>
-                <div class="color-picker-box">
-                    <input type="color" id="bgCustomPicker" value="#07040d" onchange="applyCustomBgColor(this.value)">
-                    <span style="font-size: 0.75rem; color: var(--text-gray);">Pilih warna background kustom viewer</span>
+                <hr style="border-color: var(--card-border); margin: 2px 0;">
+
+                <div class="control-card">
+                    <div class="section-header">
+                        <div class="section-header-left">
+                            <i class="fa-solid fa-palette" style="color: var(--accent-blue);"></i> KONTROL TEMA BACKGROUND VIEWER
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.72rem; color: var(--text-gray);">Quick Theme Switch:</p>
+                    <div class="btn-group">
+                        <button class="btn-secondary" onclick="setViewerThemeMode('dark')">
+                            <i class="fa-solid fa-moon"></i> Dark Mode
+                        </button>
+                        <button class="btn-secondary" style="background: #e6e6e6; color: #000; border-color: #ccc;" onclick="setViewerThemeMode('light')">
+                            <i class="fa-solid fa-sun" style="color: #ff9900;"></i> Light Mode
+                        </button>
+                    </div>
+
+                    <p style="font-size: 0.72rem; color: var(--text-gray); margin-top: 6px;">Custom Color Picker:</p>
+                    <div class="color-picker-box">
+                        <input type="color" id="bgCustomPicker" value="#07040d" onchange="applyCustomBgColor(this.value)">
+                        <span style="font-size: 0.75rem; color: var(--text-gray);">Pilih warna background kustom viewer</span>
+                    </div>
                 </div>
+
             </div>
 
         </div>
@@ -678,89 +723,87 @@
             });
         }
 
-        function handleYtSearchEnter(e) {
-            if(e.key === 'Enter') searchYoutubeVideos();
-        }
+        /* FUNGSIONALITAS BARU: TEKS KE STIKER */
+        let currentStickerDataUrl = "";
+        function generateTextSticker() {
+            const text = document.getElementById('stickerTextInput').value.trim();
+            const style = document.getElementById('stickerStyleSelect').value;
+            const canvas = document.getElementById('stickerCanvas');
+            const ctx = canvas.getContext('2d');
 
-        function searchYoutubeVideos() {
-            const query = document.getElementById('ytSearchQueryInput').value.trim();
-            const resultsContainer = document.getElementById('ytSearchResults');
-            if(!query) {
-                alert('Ketik judul video yang mau dicari bre!');
+            if (!text) {
+                alert('Isi teks stiker dulu bre!');
                 return;
             }
 
-            resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: var(--accent-blue); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Mencari video YouTube...</p>';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            fetch(`https://inv.tux.pizza/api/v1/search?q=${encodeURIComponent(query)}&type=video`)
-            .then(res => {
-                if(!res.ok) throw new Error("API error");
-                return res.json();
-            })
-            .then(data => {
-                resultsContainer.innerHTML = '';
-                if(!data || data.length === 0) {
-                    resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: var(--text-gray); text-align:center;">Video tidak ditemukan!</p>';
-                    return;
+            // Styling Stiker
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '900 42px Orbitron, sans-serif';
+
+            if (style === 'neon') {
+                ctx.fillStyle = '#07040d';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.shadowColor = '#ff0077';
+                ctx.shadowBlur = 20;
+                ctx.strokeStyle = '#00d2ff';
+                ctx.lineWidth = 6;
+                ctx.strokeText(text, canvas.width / 2, canvas.height / 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+            } else if (style === 'gold') {
+                ctx.fillStyle = '#110821';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.shadowColor = '#ffb700';
+                ctx.shadowBlur = 25;
+                ctx.fillStyle = '#ffb700';
+                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+            } else {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 8;
+                ctx.strokeText(text, canvas.width / 2, canvas.height / 2);
+                ctx.fillStyle = '#ff0077';
+                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+            }
+
+            canvas.style.display = 'block';
+            currentStickerDataUrl = canvas.toDataURL('image/png');
+            document.getElementById('stickerResultBox').style.display = 'flex';
+        }
+
+        function downloadSticker() {
+            if (!currentStickerDataUrl) return;
+            const a = document.createElement('a');
+            a.href = currentStickerDataUrl;
+            a.download = 'stiker-prindapan.png';
+            a.click();
+        }
+
+        function applyStickerToVault() {
+            if (!currentStickerDataUrl) return;
+            document.getElementById('linkImg').value = currentStickerDataUrl;
+            showAdminTab('vaultTab', document.querySelectorAll('.admin-nav-btn')[0]);
+            alert('Stiker berhasil dipasang jadi thumbnail di tab Vault!');
+        }
+
+        /* FUNGSIONALITAS BARU: FILTER LIVE CHAT */
+        function filterLiveChat() {
+            const input = document.getElementById('chatFilterInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#adminChatBox .chat-msg-row');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
                 }
-
-                data.slice(0, 5).forEach(item => {
-                    const title = item.title || 'Tanpa Judul';
-                    const videoId = item.videoId;
-                    const ytLink = `https://www.youtube.com/watch?v=${videoId}`;
-                    const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-                    const channel = item.author || 'Unknown Channel';
-                    
-                    let uploadDateStr = 'Tanggal tidak diketahui';
-                    if(item.published) {
-                        const dateObj = new Date(item.published * 1000);
-                        uploadDateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-                    } else if(item.publishedText) {
-                        uploadDateStr = item.publishedText;
-                    }
-
-                    const description = item.description || 'Tidak ada deskripsi video.';
-
-                    resultsContainer.innerHTML += `
-                        <div class="yt-search-card">
-                            <div class="yt-card-header">
-                                <img src="${thumb}" class="yt-card-thumb" alt="thumbnail">
-                                <div class="yt-card-meta">
-                                    <div class="yt-card-title">${escapeHtml(title)}</div>
-                                    <div class="yt-card-channel"><i class="fa-solid fa-user"></i> ${escapeHtml(channel)}</div>
-                                    <div class="yt-card-date"><i class="fa-regular fa-calendar-days"></i> Rilis: ${escapeHtml(uploadDateStr)}</div>
-                                </div>
-                            </div>
-                            <div class="yt-card-desc"><i class="fa-solid fa-align-left"></i> <strong>Deskripsi:</strong><br>${escapeHtml(description)}</div>
-                            <div class="btn-group">
-                                <button class="btn-secondary" style="font-size:0.7rem; padding:8px; border-color:#ff0055; color:#ff0055;" onclick="copyYtVideoLink('${ytLink}')">
-                                    <i class="fa-solid fa-copy"></i> Salin Link
-                                </button>
-                                <button class="btn-blue" style="font-size:0.7rem; padding:8px;" onclick="applyYtToConverter('${ytLink}')">
-                                    <i class="fa-solid fa-arrows-rotate"></i> Tempel ke Konverter
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-            })
-            .catch(() => {
-                resultsContainer.innerHTML = '<p style="font-size:0.75rem; color: #ff0055; text-align:center;">Gagal memuat hasil pencarian.</p>';
             });
-        }
-
-        function copyYtVideoLink(link) {
-            navigator.clipboard.writeText(link).then(() => {
-                alert(`Link video berhasil disalin:\n${link}`);
-            }).catch(() => {
-                prompt("Salin link ini manual bre:", link);
-            });
-        }
-
-        function applyYtToConverter(link) {
-            document.getElementById('convertUrlInput').value = link;
-            document.getElementById('convertUrlInput').scrollIntoView({ behavior: 'smooth' });
-            alert(`Link YouTube berhasil ditempel ke Tool Konversi di atas!`);
         }
 
         db.ref('chatMessages').limitToLast(50).on('value', (snapshot) => {
@@ -784,6 +827,7 @@
                         </div>
                     `;
                 }
+                filterLiveChat();
                 adminBox.scrollTop = adminBox.scrollHeight;
             } else {
                 adminBox.innerHTML = '<p style="font-size:0.75rem; color:var(--text-gray); text-align:center; padding-top:20px;">Belum ada pesan chat.</p>';
@@ -867,4 +911,4 @@
         }
     </script>
 </body>
-                </html>
+                                                                                                                                                             </html>
