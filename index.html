@@ -52,7 +52,6 @@
             z-index: 1; 
         }
 
-        /* STICKY HEADER & NAV BAGIAN ATAS */
         .sticky-top-wrapper {
             position: sticky;
             top: 0;
@@ -114,7 +113,6 @@
         .admin-nav-btn { flex: 0 0 auto; min-width: 80px; padding: 10px 12px; border: none; background: transparent; color: var(--text-gray); font-size: 0.72rem; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; white-space: nowrap; }
         .admin-nav-btn.active { background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple)); color: #fff; }
 
-        /* SCROLLABLE CONTENT SECTION */
         .content-scrollable {
             flex: 1;
             overflow-y: auto;
@@ -160,7 +158,6 @@
         button.btn-secondary { background: #1a0c33; border: 1px solid var(--accent-purple); color: #fff; font-weight: 600; cursor: pointer; }
         button.btn-blue { background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple)); border: none; font-weight: 700; cursor: pointer; font-family: 'Orbitron', sans-serif; }
 
-        /* VAULT LIST */
         .vault-list-box { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
         .vault-item { background: #0d061a; border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 10px; }
         .vault-item-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: #1a0c33; border: 1px solid var(--card-border); }
@@ -210,15 +207,13 @@
         .status-badge.open { background: rgba(0, 255, 102, 0.15); color: #00ff66; border: 1px solid #00ff66; }
         .status-badge.closed { background: rgba(255, 0, 85, 0.15); color: #ff0055; border: 1px solid #ff0055; }
 
-        /* CANVAS PREVIEW STIKER */
-        #stickerCanvas { display: none; margin: 10px auto; max-width: 100%; border-radius: 10px; border: 1px dashed var(--accent-pink); }
+        #stickerCanvas { display: none; margin: 10px auto; max-width: 100%; border-radius: 10px; border: 1px solid #ffffff; }
     </style>
 </head>
 <body>
 
     <div class="admin-container">
 
-        <!-- STICKY HEADER & NAV -->
         <div class="sticky-top-wrapper">
             <div class="header-box">
                 <div class="header-title"><i class="fa-solid fa-user-shield"></i> PRINDAPAN ADMIN</div>
@@ -233,7 +228,6 @@
             </div>
         </div>
 
-        <!-- CONTENT BISA DI-SCROLL -->
         <div class="content-scrollable">
 
             <!-- TAB 1: VAULT -->
@@ -309,14 +303,9 @@
 
                 <hr style="border-color: var(--card-border); margin: 8px 0;">
 
-                <!-- GENERATOR TEKS KE STIKER -->
+                <!-- GENERATOR TEKS KE STIKER SIMPEL -->
                 <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-note-sticky" style="color: #ffb700;"></i> GENERATOR TEKS KE STIKER</div></div>
                 <input type="text" id="stickerTextInput" placeholder="Ketik teks stiker di sini...">
-                <select id="stickerStyleSelect">
-                    <option value="neon">Gaya: Cyber Neon Glow</option>
-                    <option value="gold">Gaya: Gold Cyberpunk</option>
-                    <option value="comic">Gaya: Comic Meme</option>
-                </select>
                 <button class="btn-primary" style="background: linear-gradient(45deg, #ffb700, #ff0077);" onclick="generateTextSticker()"><i class="fa-solid fa-wand-magic-sparkles"></i> BUAT STIKER</button>
 
                 <canvas id="stickerCanvas" width="512" height="512"></canvas>
@@ -722,13 +711,12 @@
             });
         }
 
-        /* FUNGSIONALITAS GENERATOR TEKS KE STIKER */
+        /* FUNGSIONALITAS GENERATOR TEKS KE STIKER SIMPEL (RATA KIRI & HITAM-PUTIH) */
         const ADMIN_WA_NUMBER = "6283139352624";
         let currentStickerDataUrl = "";
 
         function generateTextSticker() {
             const text = document.getElementById('stickerTextInput').value.trim();
-            const style = document.getElementById('stickerStyleSelect').value;
             const canvas = document.getElementById('stickerCanvas');
             const ctx = canvas.getContext('2d');
 
@@ -739,20 +727,19 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Set Background Canvas
-            if (style === 'neon') {
-                ctx.fillStyle = '#07040d';
-            } else if (style === 'gold') {
-                ctx.fillStyle = '#110821';
-            } else {
-                ctx.fillStyle = '#ffffff';
-            }
+            // Background Putih Polos
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Auto Wrap & Resize Text biar Nge-pas di Kotak Canvas
-            const maxWidth = canvas.width - 60;
-            let fontSize = 42;
-            ctx.font = `900 ${fontSize}px Orbitron, sans-serif`;
+            // Reset Efek Glow / Shadow
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'transparent';
+
+            // Auto Wrap Rata Kiri
+            const paddingLeft = 40;
+            const maxWidth = canvas.width - (paddingLeft * 2);
+            let fontSize = 38;
+            ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
 
             function wrapText(txt, maxW) {
                 const words = txt.split(' ');
@@ -775,50 +762,31 @@
 
             let lines = wrapText(text, maxWidth);
 
-            while (lines.length * (fontSize * 1.3) > canvas.height - 80 && fontSize > 16) {
-                fontSize -= 4;
-                ctx.font = `900 ${fontSize}px Orbitron, sans-serif`;
+            while (lines.length * (fontSize * 1.35) > canvas.height - 80 && fontSize > 18) {
+                fontSize -= 3;
+                ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
                 lines = wrapText(text, maxWidth);
             }
 
-            // Render Teks ke Tengah Canvas
-            ctx.textAlign = 'center';
+            // Render Teks Rata Kiri
+            ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
 
-            const lineHeight = fontSize * 1.3;
+            const lineHeight = fontSize * 1.35;
             const startY = (canvas.height - (lines.length * lineHeight)) / 2 + (lineHeight / 2);
+
+            ctx.fillStyle = '#000000';
 
             lines.forEach((line, index) => {
                 const y = startY + (index * lineHeight);
-
-                if (style === 'neon') {
-                    ctx.shadowColor = '#ff0077';
-                    ctx.shadowBlur = 20;
-                    ctx.strokeStyle = '#00d2ff';
-                    ctx.lineWidth = 6;
-                    ctx.strokeText(line, canvas.width / 2, y);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(line, canvas.width / 2, y);
-                } else if (style === 'gold') {
-                    ctx.shadowColor = '#ffb700';
-                    ctx.shadowBlur = 25;
-                    ctx.fillStyle = '#ffb700';
-                    ctx.fillText(line, canvas.width / 2, y);
-                } else {
-                    ctx.shadowBlur = 0;
-                    ctx.strokeStyle = '#000000';
-                    ctx.lineWidth = 8;
-                    ctx.strokeText(line, canvas.width / 2, y);
-                    ctx.fillStyle = '#ff0077';
-                    ctx.fillText(line, canvas.width / 2, y);
-                }
+                ctx.fillText(line, paddingLeft, y);
             });
 
             canvas.style.display = 'block';
             currentStickerDataUrl = canvas.toDataURL('image/png');
             document.getElementById('stickerResultBox').style.display = 'flex';
 
-            // Auto Salin Gambar ke Clipboard (Bila Didukung Browser)
+            // Auto Salin Gambar ke Clipboard
             canvas.toBlob((blob) => {
                 try {
                     const item = new ClipboardItem({ "image/png": blob });
@@ -852,7 +820,6 @@
             alert('Stiker berhasil dipasang jadi thumbnail di tab Vault!');
         }
 
-        /* FUNGSIONALITAS FILTER LIVE CHAT */
         function filterLiveChat() {
             const input = document.getElementById('chatFilterInput').value.toLowerCase();
             const rows = document.querySelectorAll('#adminChatBox .chat-msg-row');
@@ -972,4 +939,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
