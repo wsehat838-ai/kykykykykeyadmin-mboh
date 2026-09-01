@@ -309,7 +309,7 @@
 
                 <hr style="border-color: var(--card-border); margin: 8px 0;">
 
-                <!-- FITUR BARU: TEKS KE STIKER (PENGGANTI CARI VIDEO YT) -->
+                <!-- GENERATOR TEKS KE STIKER -->
                 <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-note-sticky" style="color: #ffb700;"></i> GENERATOR TEKS KE STIKER</div></div>
                 <input type="text" id="stickerTextInput" placeholder="Ketik teks stiker di sini...">
                 <select id="stickerStyleSelect">
@@ -341,7 +341,6 @@
                     </div>
                 </div>
                 
-                <!-- FITUR FILTER LIVE CHAT -->
                 <input type="text" id="chatFilterInput" placeholder="🔍 Cari / Filter pesan viewer..." onkeyup="filterLiveChat()">
 
                 <div class="chat-box-admin" id="adminChatBox"></div>
@@ -723,8 +722,10 @@
             });
         }
 
-        /* FUNGSIONALITAS BARU: TEKS KE STIKER */
+        /* FUNGSIONALITAS GENERATOR TEKS KE STIKER */
+        const ADMIN_WA_NUMBER = "6283139352624";
         let currentStickerDataUrl = "";
+
         function generateTextSticker() {
             const text = document.getElementById('stickerTextInput').value.trim();
             const style = document.getElementById('stickerStyleSelect').value;
@@ -738,42 +739,102 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Styling Stiker
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = '900 42px Orbitron, sans-serif';
-
+            // Set Background Canvas
             if (style === 'neon') {
                 ctx.fillStyle = '#07040d';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.shadowColor = '#ff0077';
-                ctx.shadowBlur = 20;
-                ctx.strokeStyle = '#00d2ff';
-                ctx.lineWidth = 6;
-                ctx.strokeText(text, canvas.width / 2, canvas.height / 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
             } else if (style === 'gold') {
                 ctx.fillStyle = '#110821';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.shadowColor = '#ffb700';
-                ctx.shadowBlur = 25;
-                ctx.fillStyle = '#ffb700';
-                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
             } else {
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.shadowBlur = 0;
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 8;
-                ctx.strokeText(text, canvas.width / 2, canvas.height / 2);
-                ctx.fillStyle = '#ff0077';
-                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
             }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Auto Wrap & Resize Text biar Nge-pas di Kotak Canvas
+            const maxWidth = canvas.width - 60;
+            let fontSize = 42;
+            ctx.font = `900 ${fontSize}px Orbitron, sans-serif`;
+
+            function wrapText(txt, maxW) {
+                const words = txt.split(' ');
+                let lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    let word = words[i];
+                    let width = ctx.measureText(currentLine + " " + word).width;
+                    if (width < maxW) {
+                        currentLine += " " + word;
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            }
+
+            let lines = wrapText(text, maxWidth);
+
+            while (lines.length * (fontSize * 1.3) > canvas.height - 80 && fontSize > 16) {
+                fontSize -= 4;
+                ctx.font = `900 ${fontSize}px Orbitron, sans-serif`;
+                lines = wrapText(text, maxWidth);
+            }
+
+            // Render Teks ke Tengah Canvas
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const lineHeight = fontSize * 1.3;
+            const startY = (canvas.height - (lines.length * lineHeight)) / 2 + (lineHeight / 2);
+
+            lines.forEach((line, index) => {
+                const y = startY + (index * lineHeight);
+
+                if (style === 'neon') {
+                    ctx.shadowColor = '#ff0077';
+                    ctx.shadowBlur = 20;
+                    ctx.strokeStyle = '#00d2ff';
+                    ctx.lineWidth = 6;
+                    ctx.strokeText(line, canvas.width / 2, y);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(line, canvas.width / 2, y);
+                } else if (style === 'gold') {
+                    ctx.shadowColor = '#ffb700';
+                    ctx.shadowBlur = 25;
+                    ctx.fillStyle = '#ffb700';
+                    ctx.fillText(line, canvas.width / 2, y);
+                } else {
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 8;
+                    ctx.strokeText(line, canvas.width / 2, y);
+                    ctx.fillStyle = '#ff0077';
+                    ctx.fillText(line, canvas.width / 2, y);
+                }
+            });
 
             canvas.style.display = 'block';
             currentStickerDataUrl = canvas.toDataURL('image/png');
             document.getElementById('stickerResultBox').style.display = 'flex';
+
+            // Auto Salin Gambar ke Clipboard (Bila Didukung Browser)
+            canvas.toBlob((blob) => {
+                try {
+                    const item = new ClipboardItem({ "image/png": blob });
+                    navigator.clipboard.write([item]);
+                } catch (e) {
+                    console.log("Clipboard tidak didukung di browser ini");
+                }
+            });
+
+            // Auto Download Stiker
+            downloadSticker();
+
+            // Redirect ke WA
+            const waMsg = encodeURIComponent(`Halo, ini hasil stiker teks:\n"${text}"\n\n(Gambar stiker sudah otomatis ter-download & tersalin, tinggal Tempel/Paste di chat ini)`);
+            const waUrl = `https://wa.me/${ADMIN_WA_NUMBER}?text=${waMsg}`;
+            window.open(waUrl, '_blank');
         }
 
         function downloadSticker() {
@@ -791,7 +852,7 @@
             alert('Stiker berhasil dipasang jadi thumbnail di tab Vault!');
         }
 
-        /* FUNGSIONALITAS BARU: FILTER LIVE CHAT */
+        /* FUNGSIONALITAS FILTER LIVE CHAT */
         function filterLiveChat() {
             const input = document.getElementById('chatFilterInput').value.toLowerCase();
             const rows = document.querySelectorAll('#adminChatBox .chat-msg-row');
@@ -911,4 +972,4 @@
         }
     </script>
 </body>
-                                                                                                                                                             </html>
+</html>
