@@ -225,6 +225,7 @@
                 <button class="admin-nav-btn" onclick="showAdminTab('liveChatTab', this)"><i class="fa-solid fa-comments"></i> Live Chat</button>
                 <button class="admin-nav-btn" onclick="showAdminTab('infoAdminTab', this)"><i class="fa-solid fa-chart-line"></i> Rating</button>
                 <button class="admin-nav-btn" onclick="showAdminTab('controlTab', this)"><i class="fa-solid fa-sliders"></i> Control</button>
+                <button class="admin-nav-btn" onclick="showAdminTab('gameTab', this)"><i class="fa-solid fa-gamepad"></i> Mini Game</button>
             </div>
         </div>
 
@@ -288,18 +289,26 @@
 
                 <hr style="border-color: var(--card-border); margin: 8px 0;">
 
-                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent-blue);"></i> KONVERSI VIDEO TO MP3 / OPUS / MP4</div></div>
-                <input type="text" id="convertUrlInput" placeholder="Paste Link YouTube untuk Konversi...">
-                <button class="btn-primary" onclick="processMediaConvert()"><i class="fa-solid fa-gear"></i> PROSES KONVERSI</button>
+                <!-- FITUR ALL MEDIA DOWNLOADER TERINTEGRASI -->
+                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent-blue);"></i> ALL MEDIA DOWNLOADER (YT / IG / TT)</div></div>
+                <input type="text" id="mediaUrl" placeholder="Paste link YouTube, TikTok, atau Instagram...">
+                
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                    <select id="mediaPlatform" style="flex: 1;">
+                        <option value="auto">⚡ Deteksi Otomatis</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="instagram">Instagram</option>
+                    </select>
 
-                <div id="convertResultBox" class="output-box">
-                    <strong style="color: var(--accent-pink);">Pilih Format Unduhan:</strong>
-                    <div class="btn-group">
-                        <button class="btn-secondary" onclick="downloadFormat('mp3')"><i class="fa-solid fa-music"></i> Audio MP3</button>
-                        <button class="btn-secondary" onclick="downloadFormat('opus')"><i class="fa-solid fa-file-audio"></i> Audio OPUS</button>
-                        <button class="btn-blue" onclick="downloadFormat('mp4')"><i class="fa-solid fa-video"></i> Video MP4</button>
-                    </div>
+                    <select id="mediaFormat" style="flex: 1;">
+                        <option value="mp4">📹 MP4 (Video)</option>
+                        <option value="mp3">🎵 MP3 (Audio)</option>
+                    </select>
                 </div>
+
+                <button class="btn-primary" id="btnDownload" onclick="processDownload()" style="margin-top: 8px;"><i class="fa-solid fa-gear"></i> PROSES & DOWNLOAD SEKARANG</button>
+                <p id="statusText" style="margin-top: 6px; font-size: 0.72rem; color: var(--text-gray); text-align: center;"></p>
 
                 <hr style="border-color: var(--card-border); margin: 8px 0;">
 
@@ -416,6 +425,56 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- TAB 6: MINI GAME PONG TENNIS -->
+            <div id="gameTab" class="admin-section">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <i class="fa-solid fa-gamepad" style="color: var(--accent-pink);"></i> CYBER PONG TENNIS
+                    </div>
+                    <div class="status-badge open" id="gameScoreText">P1: 0 | P2: 0</div>
+                </div>
+
+                <!-- Opsi Modus & Kontrol Game -->
+                <div style="display: flex; gap: 8px;">
+                    <select id="gameModeSelect" onchange="resetGame()" style="flex: 1;">
+                        <option value="ai_easy">🤖 Mode: vs AI (Mudah)</option>
+                        <option value="ai_hard">🤖 Mode: vs AI (SUSAH)</option>
+                        <option value="2player">👥 Mode: 2 Player (Lokal)</option>
+                    </select>
+                    <button class="btn-primary" onclick="toggleGameStart()" id="btnStartGame" style="width: auto; padding: 0 15px;">
+                        <i class="fa-solid fa-play"></i> MULAI
+                    </button>
+                </div>
+
+                <!-- Canvas Tempat Game Diberdirikan -->
+                <div style="position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; border: 2px solid var(--accent-purple); overflow: hidden; margin-top: 5px;">
+                    <canvas id="pongCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                </div>
+
+                <!-- Kontrol Khusus Layar HP / Mobile -->
+                <div id="mobileControlsBox" style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <span style="font-size: 0.7rem; color: var(--text-gray); text-align: center;">KONTROL SENTUH (TOUCHSCREEN)</span>
+                    
+                    <div style="display: flex; justify-content: space-between; gap: 10px;">
+                        <!-- Player 1 Touch -->
+                        <div style="flex: 1; display: flex; gap: 5px;">
+                            <button class="btn-secondary" style="padding: 12px 0;" ontouchstart="p1MoveUp=true" ontouchend="p1MoveUp=false" onmousedown="p1MoveUp=true" onmouseup="p1MoveUp=false"><i class="fa-solid fa-arrow-up"></i> P1 UP</button>
+                            <button class="btn-secondary" style="padding: 12px 0;" ontouchstart="p1MoveDown=true" ontouchend="p1MoveDown=false" onmousedown="p1MoveDown=true" onmouseup="p1MoveDown=false"><i class="fa-solid fa-arrow-down"></i> P1 DOWN</button>
+                        </div>
+
+                        <!-- Player 2 Touch -->
+                        <div id="p2MobileControls" style="flex: 1; display: flex; gap: 5px;">
+                            <button class="btn-secondary" style="background: #250c38; border-color: var(--accent-pink); padding: 12px 0;" ontouchstart="p2MoveUp=true" ontouchend="p2MoveUp=false" onmousedown="p2MoveUp=true" onmouseup="p2MoveUp=false"><i class="fa-solid fa-arrow-up"></i> P2 UP</button>
+                            <button class="btn-secondary" style="background: #250c38; border-color: var(--accent-pink); padding: 12px 0;" ontouchstart="p2MoveDown=true" ontouchend="p2MoveDown=false" onmousedown="p2MoveDown=true" onmouseup="p2MoveDown=false"><i class="fa-solid fa-arrow-down"></i> P2 DOWN</button>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="font-size: 0.68rem; color: var(--text-gray); text-align: center; margin-top: 2px;">
+                    ⌨️ <b>PC Controls:</b> Player 1: [W] / [S] atau Panah [Up] / [Down]. Player 2: [O] / [L].
+                </p>
             </div>
 
         </div>
@@ -671,47 +730,49 @@
             alert('Judul, Thumbnail, dan Link Video berhasil ditempel ke menu Vault!');
         }
 
-        let currentConvertVideoId = "";
-        function processMediaConvert() {
-            const inputUrl = document.getElementById('convertUrlInput').value.trim();
-            const vId = getYoutubeId(inputUrl);
-            if(!vId) {
-                alert("Masukkan Link YouTube yang valid!");
+        async function processDownload() {
+            const url = document.getElementById('mediaUrl').value.trim();
+            const format = document.getElementById('mediaFormat').value;
+            const platform = document.getElementById('mediaPlatform').value;
+            const status = document.getElementById('statusText');
+            const btn = document.getElementById('btnDownload');
+
+            if (!url) {
+                alert("Paste link-nya dulu bre!");
                 return;
             }
-            currentConvertVideoId = vId;
-            document.getElementById('convertResultBox').style.display = 'flex';
+
+            btn.disabled = true;
+            status.innerText = "⏳ Sedang memproses dan mengunduh media...";
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, format, platform })
+                });
+
+                if (!response.ok) throw new Error("Gagal mengambil data dari server");
+
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `media_download.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(downloadUrl);
+
+                status.innerText = "✅ Unduhan berhasil!";
+            } catch (err) {
+                status.innerText = "❌ Gagal mengunduh. Pastikan backend serverless `/api/download` lu aktif.";
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+            }
         }
 
-        function downloadFormat(type) {
-            if(!currentConvertVideoId) return;
-            const serviceUrl = `https://co.wuk.sh/api/json`;
-            fetch(serviceUrl, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    url: `https://www.youtube.com/watch?v=${currentConvertVideoId}`,
-                    isAudioOnly: (type === 'mp3' || type === 'opus'),
-                    aFormat: type === 'opus' ? 'opus' : 'mp3'
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    window.open(`https://api.cobalt.tools/api/json?url=https://www.youtube.com/watch?v=${currentConvertVideoId}`, '_blank');
-                }
-            })
-            .catch(() => {
-                window.open(`https://loader.to/api/card/?url=https://www.youtube.com/watch?v=${currentConvertVideoId}&f=${type}`, '_blank');
-            });
-        }
-
-        /* FUNGSIONALITAS GENERATOR TEKS KE STIKER SIMPEL (RATA KIRI & HITAM-PUTIH) */
         const ADMIN_WA_NUMBER = "6283139352624";
         let currentStickerDataUrl = "";
 
@@ -726,16 +787,9 @@
             }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Background Putih Polos
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Reset Efek Glow / Shadow
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = 'transparent';
-
-            // Auto Wrap Rata Kiri
             const paddingLeft = 40;
             const maxWidth = canvas.width - (paddingLeft * 2);
             let fontSize = 38;
@@ -768,7 +822,6 @@
                 lines = wrapText(text, maxWidth);
             }
 
-            // Render Teks Rata Kiri
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
 
@@ -786,20 +839,17 @@
             currentStickerDataUrl = canvas.toDataURL('image/png');
             document.getElementById('stickerResultBox').style.display = 'flex';
 
-            // Auto Salin Gambar ke Clipboard
             canvas.toBlob((blob) => {
                 try {
                     const item = new ClipboardItem({ "image/png": blob });
                     navigator.clipboard.write([item]);
                 } catch (e) {
-                    console.log("Clipboard tidak didukung di browser ini");
+                    console.log("Clipboard tidak didukung");
                 }
             });
 
-            // Auto Download Stiker
             downloadSticker();
 
-            // Redirect ke WA
             const waMsg = encodeURIComponent(`Halo, ini hasil stiker teks:\n"${text}"\n\n(Gambar stiker sudah otomatis ter-download & tersalin, tinggal Tempel/Paste di chat ini)`);
             const waUrl = `https://wa.me/${ADMIN_WA_NUMBER}?text=${waMsg}`;
             window.open(waUrl, '_blank');
@@ -937,6 +987,166 @@
         function escapeHtml(text) {
             return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
+
+        // --- CYBER PONG GAME ENGINE ---
+        const canvas = document.getElementById('pongCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 640;
+        canvas.height = 360;
+
+        let isGameRunning = false;
+        let gameLoopId = null;
+
+        let scoreP1 = 0;
+        let scoreP2 = 0;
+
+        const paddleWidth = 10;
+        const paddleHeight = 70;
+
+        let p1Y = (canvas.height - paddleHeight) / 2;
+        let p2Y = (canvas.height - paddleHeight) / 2;
+
+        let ballX = canvas.width / 2;
+        let ballY = canvas.height / 2;
+        let ballSpeedX = 5;
+        let ballSpeedY = 3;
+        const ballRadius = 7;
+
+        let p1MoveUp = false, p1MoveDown = false;
+        let p2MoveUp = false, p2MoveDown = false;
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') p1MoveUp = true;
+            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') p1MoveDown = true;
+            if (e.key === 'o' || e.key === 'O') p2MoveUp = true;
+            if (e.key === 'l' || e.key === 'L') p2MoveDown = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') p1MoveUp = false;
+            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') p1MoveDown = false;
+            if (e.key === 'o' || e.key === 'O') p2MoveUp = false;
+            if (e.key === 'l' || e.key === 'L') p2MoveDown = false;
+        });
+
+        function toggleGameStart() {
+            const btn = document.getElementById('btnStartGame');
+            if (isGameRunning) {
+                isGameRunning = false;
+                cancelAnimationFrame(gameLoopId);
+                btn.innerHTML = `<i class="fa-solid fa-play"></i> MULAI`;
+            } else {
+                isGameRunning = true;
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> PAUSE`;
+                gameLoop();
+            }
+        }
+
+        function resetGame() {
+            scoreP1 = 0;
+            scoreP2 = 0;
+            updateScoreUI();
+            resetBall();
+        }
+
+        function resetBall() {
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * 5;
+            ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 2);
+        }
+
+        function updateScoreUI() {
+            document.getElementById('gameScoreText').innerText = `P1: ${scoreP1} | P2: ${scoreP2}`;
+        }
+
+        function updateGameLogic() {
+            const mode = document.getElementById('gameModeSelect').value;
+
+            if (p1MoveUp && p1Y > 0) p1Y -= 6;
+            if (p1MoveDown && p1Y < canvas.height - paddleHeight) p1Y += 6;
+
+            if (mode === '2player') {
+                if (p2MoveUp && p2Y > 0) p2Y -= 6;
+                if (p2MoveDown && p2Y < canvas.height - paddleHeight) p2Y += 6;
+            } else {
+                const aiSpeed = mode === 'ai_hard' ? 5.2 : 3.2;
+                const targetY = ballY - (paddleHeight / 2);
+                if (p2Y < targetY) p2Y += Math.min(aiSpeed, targetY - p2Y);
+                else if (p2Y > targetY) p2Y -= Math.min(aiSpeed, p2Y - targetY);
+            }
+
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballY - ballRadius <= 0 || ballY + ballRadius >= canvas.height) {
+                ballSpeedY = -ballSpeedY;
+            }
+
+            if (ballX - ballRadius <= 15 + paddleWidth) {
+                if (ballY >= p1Y && ballY <= p1Y + paddleHeight) {
+                    ballSpeedX = -ballSpeedX * 1.05;
+                    ballX = 15 + paddleWidth + ballRadius;
+                } else if (ballX - ballRadius <= 0) {
+                    scoreP2++;
+                    updateScoreUI();
+                    resetBall();
+                }
+            }
+
+            if (ballX + ballRadius >= canvas.width - 15 - paddleWidth) {
+                if (ballY >= p2Y && ballY <= p2Y + paddleHeight) {
+                    ballSpeedX = -ballSpeedX * 1.05;
+                    ballX = canvas.width - 15 - paddleWidth - ballRadius;
+                } else if (ballX + ballRadius >= canvas.width) {
+                    scoreP1++;
+                    updateScoreUI();
+                    resetBall();
+                }
+            }
+        }
+
+        function renderGame() {
+            ctx.fillStyle = '#07040d';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#22123f';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#00d2ff';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#00d2ff';
+            ctx.fillRect(15, p1Y, paddleWidth, paddleHeight);
+
+            ctx.fillStyle = '#ff0077';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ff0077';
+            ctx.fillRect(canvas.width - 15 - paddleWidth, p2Y, paddleWidth, paddleHeight);
+
+            ctx.fillStyle = '#ffb700';
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#ffb700';
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function gameLoop() {
+            if (!isGameRunning) return;
+            updateGameLogic();
+            renderGame();
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+
+        renderGame();
     </script>
 </body>
-    </html>
+</html>
