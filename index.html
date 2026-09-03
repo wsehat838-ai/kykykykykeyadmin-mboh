@@ -43,7 +43,7 @@
             100% { filter: hue-rotate(360deg); }
         }
 
-        /* STYLE KOTAK LOCK SCREEN / UNLOCK PIN */
+        /* STYLE KOTAK LOCK SCREEN UTAMA & FITUR */
         #authOverlay {
             position: fixed;
             inset: 0;
@@ -53,6 +53,17 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+        }
+        .feature-auth-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(7, 4, 13, 0.92);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border-radius: 14px;
         }
         .auth-card {
             width: 100%;
@@ -82,7 +93,7 @@
         }
         .auth-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #fff;
         }
@@ -102,7 +113,7 @@
             width: 100%; 
             max-width: 650px; 
             height: 100vh;
-            display: none; /* Disembunyikan dulu sebelum login sukses */
+            display: none; /* Disembunyikan dulu sebelum login utama */
             flex-direction: column; 
             z-index: 1; 
         }
@@ -177,7 +188,7 @@
             gap: 15px;
         }
 
-        .admin-section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px; display: none; flex-direction: column; gap: 12px; }
+        .admin-section { position: relative; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px; display: none; flex-direction: column; gap: 12px; }
         .admin-section.active { display: flex; }
 
         .section-header { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
@@ -267,16 +278,16 @@
 </head>
 <body>
 
-    <!-- KOTAK LAYAR KUNCI / LOGIN PIN -->
+    <!-- KOTAK LAYAR KUNCI UTAMA -->
     <div id="authOverlay">
         <div class="auth-card">
             <div class="auth-icon"><i class="fa-solid fa-lock"></i></div>
             <div>
                 <div class="auth-title">RESTRICTED AREA</div>
-                <div class="auth-desc">Masukkan password rahasia campuran huruf &amp; angka untuk membuka Admin Panel.</div>
+                <div class="auth-desc">Masukkan password rahasia utama untuk membuka Admin Panel.</div>
             </div>
             <div class="auth-input-box">
-                <input type="password" id="adminPinInput" placeholder="Ketik password rahasia...">
+                <input type="password" id="adminPinInput" placeholder="Ketik password utama...">
                 <button class="btn-primary" onclick="verifyAdminPin()"><i class="fa-solid fa-key"></i> UNLOCK PANEL</button>
             </div>
         </div>
@@ -302,11 +313,27 @@
 
             <!-- TAB 1: VAULT -->
             <div id="vaultTab" class="admin-section active">
+                
+                <!-- POPUP PIN UPLOAD LINK -->
+                <div id="vaultAuthOverlay" class="feature-auth-overlay">
+                    <div class="auth-card">
+                        <div class="auth-icon" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div>
+                            <div class="auth-title">AUTHORIZATION REQUIRED</div>
+                            <div class="auth-desc">Masukkan PIN khusus untuk mengunggah link baru ke Vault.</div>
+                        </div>
+                        <div class="auth-input-box">
+                            <input type="password" id="vaultPinInput" placeholder="Masukkan PIN Upload...">
+                            <button class="btn-primary" onclick="verifyVaultPin()"><i class="fa-solid fa-check"></i> KONFIRMASI PIN</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-plus-circle" style="color: var(--accent-pink);"></i> TAMBAH LINK BARU</div></div>
                 <input type="text" id="linkTitle" placeholder="Judul File / Game">
                 <input type="text" id="linkUrl" placeholder="URL Download Link">
                 <input type="text" id="linkImg" placeholder="URL Gambar Thumbnail (Direct Link)">
-                <button class="btn-primary" onclick="addLink()"><i class="fa-solid fa-floppy-disk"></i> SIMPAN FILE</button>
+                <button class="btn-primary" onclick="requestUploadLink()"><i class="fa-solid fa-floppy-disk"></i> SIMPAN FILE</button>
 
                 <hr style="border-color: var(--card-border); margin: 6px 0;">
 
@@ -391,6 +418,22 @@
 
             <!-- TAB 3: LIVE CHAT -->
             <div id="liveChatTab" class="admin-section">
+                
+                <!-- POPUP PIN LIVE CHAT -->
+                <div id="chatAuthOverlay" class="feature-auth-overlay" style="display: flex;">
+                    <div class="auth-card">
+                        <div class="auth-icon" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));"><i class="fa-solid fa-comments"></i></div>
+                        <div>
+                            <div class="auth-title">LIVE CHAT ACCESS</div>
+                            <div class="auth-desc">Masukkan PIN khusus untuk membuka tab Live Chat.</div>
+                        </div>
+                        <div class="auth-input-box">
+                            <input type="password" id="chatPinInput" placeholder="Masukkan PIN Chat...">
+                            <button class="btn-primary" onclick="verifyChatPin()"><i class="fa-solid fa-check"></i> MASUK CHAT</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section-header">
                     <div class="section-header-left">
                         <i class="fa-solid fa-comments" style="color: var(--accent-blue);"></i> MONITOR LIVE CHAT VIEWER
@@ -428,6 +471,22 @@
 
             <!-- TAB 5: CONTROL -->
             <div id="controlTab" class="admin-section">
+                
+                <!-- POPUP PIN CONTROL -->
+                <div id="controlAuthOverlay" class="feature-auth-overlay" style="display: flex;">
+                    <div class="auth-card">
+                        <div class="auth-icon" style="background: linear-gradient(135deg, #ff0055, #ffb700);"><i class="fa-solid fa-sliders"></i></div>
+                        <div>
+                            <div class="auth-title">CONTROL PANEL ACCESS</div>
+                            <div class="auth-desc">Masukkan PIN khusus untuk membuka menu Control Panel.</div>
+                        </div>
+                        <div class="auth-input-box">
+                            <input type="password" id="controlPinInput" placeholder="Masukkan PIN Control...">
+                            <button class="btn-primary" onclick="verifyControlPin()"><i class="fa-solid fa-check"></i> BUKA CONTROL</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="control-card">
                     <div class="section-header">
                         <div class="section-header-left">
@@ -495,8 +554,18 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // Password acak campuran huruf dan angka yang harus lu ingat!
+        // Password Utama Admin Panel
         const ADMIN_SECRET_PIN = "x7K9pQ2m";
+
+        // PIN Khusus Fitur Sesuai Request
+        const PIN_UPLOAD_VAULT = "7a8b9c";
+        const PIN_LIVE_CHAT   = "7d8e9f";
+        const PIN_CONTROL     = "7g8h9i";
+
+        // Status Sesi Keamanan Fitur (Biar gak ketik PIN mulu kalau pindah-pindah tab sebentar)
+        let isVaultUnlocked = false;
+        let isChatUnlocked  = false;
+        let isControlUnlocked = false;
 
         function verifyAdminPin() {
             const inputVal = document.getElementById('adminPinInput').value.trim();
@@ -504,16 +573,13 @@
                 document.getElementById('authOverlay').style.display = 'none';
                 document.getElementById('adminMainContent').style.display = 'flex';
             } else {
-                alert('Password Salah! Coba ingat-ingat lagi.');
+                alert('Password Utama Salah!');
                 document.getElementById('adminPinInput').value = '';
             }
         }
 
-        // Shortcut: Bisa tekan tombol 'Enter' langsung buat unlock
         document.getElementById('adminPinInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyAdminPin();
-            }
+            if (e.key === 'Enter') verifyAdminPin();
         });
 
         function showAdminTab(tabId, btn) {
@@ -521,6 +587,62 @@
             document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
+
+            // Cek status kunci fitur saat tab dibuka
+            if (tabId === 'liveChatTab' && !isChatUnlocked) {
+                document.getElementById('chatAuthOverlay').style.display = 'flex';
+            }
+            if (tabId === 'controlTab' && !isControlUnlocked) {
+                document.getElementById('controlAuthOverlay').style.display = 'flex';
+            }
+        }
+
+        // Verifikasi PIN Upload Vault
+        function requestUploadLink() {
+            if (!isVaultUnlocked) {
+                document.getElementById('vaultAuthOverlay').style.display = 'flex';
+                document.getElementById('vaultPinInput').value = '';
+                document.getElementById('vaultPinInput').focus();
+            } else {
+                executeAddLink();
+            }
+        }
+
+        function verifyVaultPin() {
+            const val = document.getElementById('vaultPinInput').value.trim();
+            if (val === PIN_UPLOAD_VAULT) {
+                isVaultUnlocked = true;
+                document.getElementById('vaultAuthOverlay').style.display = 'none';
+                alert('PIN Upload Benar! Silakan masukkan data link.');
+                executeAddLink();
+            } else {
+                alert('PIN Upload Salah!');
+                document.getElementById('vaultPinInput').value = '';
+            }
+        }
+
+        // Verifikasi PIN Live Chat
+        function verifyChatPin() {
+            const val = document.getElementById('chatPinInput').value.trim();
+            if (val === PIN_LIVE_CHAT) {
+                isChatUnlocked = true;
+                document.getElementById('chatAuthOverlay').style.display = 'none';
+            } else {
+                alert('PIN Live Chat Salah!');
+                document.getElementById('chatPinInput').value = '';
+            }
+        }
+
+        // Verifikasi PIN Control
+        function verifyControlPin() {
+            const val = document.getElementById('controlPinInput').value.trim();
+            if (val === PIN_CONTROL) {
+                isControlUnlocked = true;
+                document.getElementById('controlAuthOverlay').style.display = 'none';
+            } else {
+                alert('PIN Control Salah!');
+                document.getElementById('controlPinInput').value = '';
+            }
         }
 
         const firebaseConfig = {
@@ -567,50 +689,31 @@
             const statusText = isOpen ? "MEMBUKA" : "MENUTUP";
             if (confirm(`Yakin ingin ${statusText} akses web viewer?`)) {
                 db.ref('serverAccess').set(isOpen, (err) => {
-                    if (!err) {
-                        alert(`Akses web viewer berhasil di-set ke: ${isOpen ? 'OPEN' : 'CLOSE'}`);
-                    } else {
-                        alert('Gagal mengubah status akses!');
-                    }
+                    if (!err) alert(`Akses web viewer berhasil di-set ke: ${isOpen ? 'OPEN' : 'CLOSE'}`);
                 });
             }
         }
 
         function triggerHalloweenPrank() {
             if (confirm("Kirim hujan emoji Halloween ke seluruh viewer online?")) {
-                db.ref('activePrank').set({
-                    type: 'halloween_rain',
-                    timestamp: Date.now()
-                }, (err) => {
-                    if (!err) {
-                        alert('Prank Halloween berhasil dikirim!');
-                    } else {
-                        alert('Gagal mengirim prank!');
-                    }
+                db.ref('activePrank').set({ type: 'halloween_rain', timestamp: Date.now() }, (err) => {
+                    if (!err) alert('Prank Halloween berhasil dikirim!');
                 });
             }
         }
 
         function setViewerThemeMode(mode) {
             const color = (mode === 'dark') ? '#07040d' : '#ffffff';
-            db.ref('viewerTheme').set({
-                mode: mode,
-                bgColor: color,
-                timestamp: Date.now()
-            }, (err) => {
+            db.ref('viewerTheme').set({ mode: mode, bgColor: color, timestamp: Date.now() }, (err) => {
                 if(!err) alert(`Theme viewer berhasil diubah ke ${mode.toUpperCase()} mode!`);
             });
         }
 
         function applyCustomBgColor(hexColor) {
-            db.ref('viewerTheme').set({
-                mode: 'custom',
-                bgColor: hexColor,
-                timestamp: Date.now()
-            });
+            db.ref('viewerTheme').set({ mode: 'custom', bgColor: hexColor, timestamp: Date.now() });
         }
 
-        function addLink() {
+        function executeAddLink() {
             const title = document.getElementById('linkTitle').value.trim();
             const url = document.getElementById('linkUrl').value.trim();
             const img = document.getElementById('linkImg').value.trim();
@@ -665,13 +768,7 @@
 
         function deleteVaultItem(key) {
             if (confirm('Yakin ingin menghapus file ini dari web viewer?')) {
-                db.ref('links/' + key).remove((err) => {
-                    if (err) {
-                        alert('Gagal menghapus file!');
-                    } else {
-                        alert('File berhasil dihapus dari viewer!');
-                    }
-                });
+                db.ref('links/' + key).remove();
             }
         }
 
@@ -684,8 +781,7 @@
             const file = fileInput.files[0];
             const reader = new FileReader();
             reader.onload = function(e) {
-                const directUrl = e.target.result;
-                document.getElementById('directUrlResult').value = directUrl;
+                document.getElementById('directUrlResult').value = e.target.result;
                 document.getElementById('uploadResult').style.display = 'flex';
                 alert('Gambar berhasil dikonversi ke Direct Data URL!');
             };
@@ -779,10 +875,7 @@
             const serviceUrl = `https://co.wuk.sh/api/json`;
             fetch(serviceUrl, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     url: `https://www.youtube.com/watch?v=${currentConvertVideoId}`,
                     isAudioOnly: (type === 'mp3' || type === 'opus'),
@@ -818,23 +911,17 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = 'transparent';
 
-            const paddingLeft = 40;
-            const maxWidth = canvas.width - (paddingLeft * 2);
             let fontSize = 38;
-            ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
+            ctx.font = `bold ${fontSize}px sans-serif`;
 
             function wrapText(txt, maxW) {
                 const words = txt.split(' ');
                 let lines = [];
                 let currentLine = words[0];
-
                 for (let i = 1; i < words.length; i++) {
                     let word = words[i];
-                    let width = ctx.measureText(currentLine + " " + word).width;
-                    if (width < maxW) {
+                    if (ctx.measureText(currentLine + " " + word).width < maxW) {
                         currentLine += " " + word;
                     } else {
                         lines.push(currentLine);
@@ -845,45 +932,25 @@
                 return lines;
             }
 
-            let lines = wrapText(text, maxWidth);
-
-            while (lines.length * (fontSize * 1.35) > canvas.height - 80 && fontSize > 18) {
-                fontSize -= 3;
-                ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
-                lines = wrapText(text, maxWidth);
-            }
-
+            let lines = wrapText(text, canvas.width - 80);
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#000000';
 
             const lineHeight = fontSize * 1.35;
             const startY = (canvas.height - (lines.length * lineHeight)) / 2 + (lineHeight / 2);
 
-            ctx.fillStyle = '#000000';
-
             lines.forEach((line, index) => {
-                const y = startY + (index * lineHeight);
-                ctx.fillText(line, paddingLeft, y);
+                ctx.fillText(line, 40, startY + (index * lineHeight));
             });
 
             canvas.style.display = 'block';
             currentStickerDataUrl = canvas.toDataURL('image/png');
             document.getElementById('stickerResultBox').style.display = 'flex';
-
-            canvas.toBlob((blob) => {
-                try {
-                    const item = new ClipboardItem({ "image/png": blob });
-                    navigator.clipboard.write([item]);
-                } catch (e) {
-                    console.log("Clipboard tidak didukung di browser ini");
-                }
-            });
-
             downloadSticker();
 
-            const waMsg = encodeURIComponent(`Halo, ini hasil stiker teks:\n"${text}"\n\n(Gambar stiker sudah otomatis ter-download & tersalin, tinggal Tempel/Paste di chat ini)`);
-            const waUrl = `https://wa.me/${ADMIN_WA_NUMBER}?text=${waMsg}`;
-            window.open(waUrl, '_blank');
+            const waMsg = encodeURIComponent(`Halo, ini hasil stiker teks:\n"${text}"`);
+            window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${waMsg}`, '_blank');
         }
 
         function downloadSticker() {
@@ -903,15 +970,8 @@
 
         function filterLiveChat() {
             const input = document.getElementById('chatFilterInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#adminChatBox .chat-msg-row');
-
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                if (text.includes(input)) {
-                    row.style.display = 'flex';
-                } else {
-                    row.style.display = 'none';
-                }
+            document.querySelectorAll('#adminChatBox .chat-msg-row').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(input) ? 'flex' : 'none';
             });
         }
 
@@ -922,17 +982,13 @@
             if (messages) {
                 for (let key in messages) {
                     const msg = messages[key];
-                    const userName = msg.user || msg.username || 'User';
-                    const userText = msg.text || msg.message || '';
                     adminBox.innerHTML += `
                         <div class="chat-msg-row">
                             <div class="chat-msg-content">
-                                <strong style="color: var(--accent-pink); white-space: nowrap;">${escapeHtml(userName)}:</strong> 
-                                <span>${escapeHtml(userText)}</span>
+                                <strong style="color: var(--accent-pink);">${escapeHtml(msg.user || msg.username)}:</strong> 
+                                <span>${escapeHtml(msg.text || msg.message)}</span>
                             </div>
-                            <button class="btn-delete-action" onclick="deleteChatMessage('${key}')" title="Hapus Pesan">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+                            <button class="btn-delete-action" onclick="deleteChatMessage('${key}')"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     `;
                 }
@@ -944,24 +1000,16 @@
         });
 
         function deleteChatMessage(key) {
-            if (confirm("Hapus pesan ini secara permanen dari Firebase?")) {
-                db.ref('chatMessages/' + key).remove();
-            }
+            if (confirm("Hapus pesan ini?")) db.ref('chatMessages/' + key).remove();
         }
 
         function sendAdminBroadcast() {
             const msg = document.getElementById('adminBroadcastInput').value.trim();
-            if (!msg) {
-                alert('Ketik pesan broadcast terlebih dahulu!');
-                return;
-            }
-            db.ref('liveBroadcast').set({
-                text: msg,
-                timestamp: Date.now()
-            }, (err) => {
+            if (!msg) return alert('Ketik pesan broadcast terlebih dahulu!');
+            db.ref('liveBroadcast').set({ text: msg, timestamp: Date.now() }, (err) => {
                 if (!err) {
                     document.getElementById('adminBroadcastInput').value = '';
-                    alert('Pesan berhasil terkirim sebagai pop-up broadcast ke viewer!');
+                    alert('Broadcast terkirim!');
                 }
             });
         }
@@ -978,41 +1026,30 @@
                 return;
             }
 
-            let totalStars = 0;
-            let count = 0;
-
+            let totalStars = 0, count = 0;
             for (let key in ratings) {
                 const item = ratings[key];
                 const starVal = item.stars || item.rating || 5;
-                const feedbackText = item.feedback || item.comment || item.text || '';
                 totalStars += starVal;
                 count++;
 
-                let starsHtml = '';
-                for(let i=0; i<starVal; i++) starsHtml += '★';
-
+                let starsHtml = '★'.repeat(starVal);
                 list.innerHTML = `
                     <div class="feedback-item-row">
                         <div class="feedback-item-content">
                             <div class="feedback-stars">${starsHtml}</div>
-                            <div>${escapeHtml(feedbackText)}</div>
+                            <div>${escapeHtml(item.feedback || item.comment || item.text)}</div>
                         </div>
-                        <button class="btn-delete-action" onclick="deleteRatingMessage('${key}')" title="Hapus Ulasan">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                        <button class="btn-delete-action" onclick="deleteRatingMessage('${key}')"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 ` + list.innerHTML;
             }
-
-            const avg = (totalStars / count).toFixed(1);
-            document.getElementById('avgRatingValue').innerHTML = `${avg} <i class="fa-solid fa-star"></i>`;
+            document.getElementById('avgRatingValue').innerHTML = `${(totalStars / count).toFixed(1)} <i class="fa-solid fa-star"></i>`;
             document.getElementById('totalReviewsCount').innerText = `${count} Ulasan`;
         });
 
         function deleteRatingMessage(key) {
-            if (confirm("Hapus ulasan ini secara permanen dari Firebase?")) {
-                db.ref('ratings/' + key).remove();
-            }
+            if (confirm("Hapus ulasan ini?")) db.ref('ratings/' + key).remove();
         }
 
         function escapeHtml(text) {
@@ -1020,4 +1057,4 @@
         }
     </script>
 </body>
-  </html>
+    </html>
