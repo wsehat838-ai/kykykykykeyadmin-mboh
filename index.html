@@ -43,7 +43,6 @@
             100% { filter: hue-rotate(360deg); }
         }
 
-        /* STYLE KOTAK LOCK SCREEN UTAMA & FITUR */
         #authOverlay {
             position: fixed;
             inset: 0;
@@ -57,7 +56,7 @@
         .feature-auth-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(7, 4, 13, 0.92);
+            background: rgba(7, 4, 13, 0.95);
             z-index: 999;
             display: none;
             align-items: center;
@@ -113,7 +112,7 @@
             width: 100%; 
             max-width: 650px; 
             height: 100vh;
-            display: none; /* Disembunyikan dulu sebelum login utama */
+            display: none;
             flex-direction: column; 
             z-index: 1; 
         }
@@ -166,7 +165,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: textShimmer 3s ease infinite;
-            text-shadow: 0 0 10px rgba(255, 0, 119, 0.5);
         }
         @keyframes textShimmer {
             0% { background-position: 0% 50%; }
@@ -244,7 +242,6 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.2s ease;
         }
         .btn-del-vault:hover { background: #ff0055; color: #fff; }
 
@@ -260,8 +257,8 @@
         .feedback-item-content { display: flex; flex-direction: column; gap: 2px; flex: 1; overflow: hidden; }
         .feedback-stars { color: #ffb700; margin-bottom: 2px; }
 
-        .btn-delete-action { background: rgba(255, 0, 85, 0.15); border: 1px solid #ff0055; color: #ff0055; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; flex-shrink: 0; transition: all 0.2s ease; }
-        .btn-delete-action:hover { background: #ff0055; color: #fff; box-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
+        .btn-delete-action { background: rgba(255, 0, 85, 0.15); border: 1px solid #ff0055; color: #ff0055; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; flex-shrink: 0; }
+        .btn-delete-action:hover { background: #ff0055; color: #fff; }
 
         .output-box { display: none; background: #0d061a; border: 1px solid var(--accent-purple); border-radius: 10px; padding: 12px; font-size: 0.78rem; gap: 8px; flex-direction: column; margin-top: 5px; }
         .btn-group { display: flex; gap: 6px; margin-top: 5px; }
@@ -343,7 +340,6 @@
 
             <!-- TAB 2: TOOLS -->
             <div id="toolsTab" class="admin-section">
-                
                 <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-image" style="color: var(--accent-pink);"></i> KONVERSI GAMBAR KE DIRECT LINK</div></div>
                 <input type="file" id="imageInput" accept="image/*">
                 <button class="btn-primary" onclick="convertImageToDirectUrl()"><i class="fa-solid fa-bolt"></i> PROSES GAMBAR</button>
@@ -356,71 +352,12 @@
                         <button class="btn-blue" onclick="applyToThumbnail()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Tempel Ke Thumbnail</button>
                     </div>
                 </div>
-
-                <hr style="border-color: var(--card-border); margin: 8px 0;">
-
-                <div class="section-header"><div class="section-header-left"><i class="fa-brands fa-youtube" style="color: #ff0055;"></i> YOUTUBE DATA EXPORTER</div></div>
-                <input type="text" id="ytUrlInput" placeholder="Tempelkan link video YouTube di sini...">
-                <button class="btn-primary" onclick="extractYoutubeData()"><i class="fa-solid fa-magnifying-glass"></i> EKSTRAK DATA VIDEO</button>
-
-                <div id="ytResult" class="output-box">
-                    <strong style="color: var(--accent-blue);">Judul Video:</strong>
-                    <input type="text" id="ytTitleResult" readonly>
-                    
-                    <strong style="color: var(--accent-blue);">Thumbnail HD Direct URL:</strong>
-                    <div style="display: flex; gap: 6px;">
-                        <input type="text" id="ytThumbResult" readonly>
-                        <button class="btn-secondary" style="width: auto; padding: 0 12px;" onclick="downloadThumbnail()"><i class="fa-solid fa-download"></i> Unduh</button>
-                    </div>
-
-                    <div id="thumbPreviewBox" style="margin-top: 4px; text-align: center;">
-                        <img id="ytThumbPreviewImage" src="" style="max-width: 100%; height: 130px; object-fit: cover; border-radius: 8px; border: 1px solid var(--card-border); display: none;">
-                    </div>
-                    
-                    <strong style="color: var(--accent-blue);">Deskripsi Video:</strong>
-                    <textarea id="ytDescResult" rows="2" readonly></textarea>
-                    
-                    <button class="btn-blue" onclick="applyYtDataToVault()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Gunakan Data Ini Di Vault</button>
-                </div>
-
-                <hr style="border-color: var(--card-border); margin: 8px 0;">
-
-                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-arrows-rotate" style="color: var(--accent-blue);"></i> KONVERSI VIDEO TO MP3 / OPUS / MP4</div></div>
-                <input type="text" id="convertUrlInput" placeholder="Paste Link YouTube untuk Konversi...">
-                <button class="btn-primary" onclick="processMediaConvert()"><i class="fa-solid fa-gear"></i> PROSES KONVERSI</button>
-
-                <div id="convertResultBox" class="output-box">
-                    <strong style="color: var(--accent-pink);">Pilih Format Unduhan:</strong>
-                    <div class="btn-group">
-                        <button class="btn-secondary" onclick="downloadFormat('mp3')"><i class="fa-solid fa-music"></i> Audio MP3</button>
-                        <button class="btn-secondary" onclick="downloadFormat('opus')"><i class="fa-solid fa-file-audio"></i> Audio OPUS</button>
-                        <button class="btn-blue" onclick="downloadFormat('mp4')"><i class="fa-solid fa-video"></i> Video MP4</button>
-                    </div>
-                </div>
-
-                <hr style="border-color: var(--card-border); margin: 8px 0;">
-
-                <!-- GENERATOR TEKS KE STIKER SIMPEL -->
-                <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-note-sticky" style="color: #ffb700;"></i> GENERATOR TEKS KE STIKER</div></div>
-                <input type="text" id="stickerTextInput" placeholder="Ketik teks stiker di sini...">
-                <button class="btn-primary" style="background: linear-gradient(45deg, #ffb700, #ff0077);" onclick="generateTextSticker()"><i class="fa-solid fa-wand-magic-sparkles"></i> BUAT STIKER</button>
-
-                <canvas id="stickerCanvas" width="512" height="512"></canvas>
-                <div id="stickerResultBox" class="output-box">
-                    <span style="color: #ffb700; font-weight: 700;">Stiker Berhasil Dibuat!</span>
-                    <div class="btn-group">
-                        <button class="btn-blue" onclick="downloadSticker()"><i class="fa-solid fa-download"></i> Unduh Stiker (PNG)</button>
-                        <button class="btn-secondary" onclick="applyStickerToVault()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Pakai Di Thumbnail</button>
-                    </div>
-                </div>
-
             </div>
 
             <!-- TAB 3: LIVE CHAT -->
             <div id="liveChatTab" class="admin-section">
-                
                 <!-- POPUP PIN LIVE CHAT -->
-                <div id="chatAuthOverlay" class="feature-auth-overlay" style="display: flex;">
+                <div id="chatAuthOverlay" class="feature-auth-overlay">
                     <div class="auth-card">
                         <div class="auth-icon" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));"><i class="fa-solid fa-comments"></i></div>
                         <div>
@@ -444,7 +381,6 @@
                 </div>
                 
                 <input type="text" id="chatFilterInput" placeholder="🔍 Cari / Filter pesan viewer..." onkeyup="filterLiveChat()">
-
                 <div class="chat-box-admin" id="adminChatBox"></div>
                 
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
@@ -456,7 +392,6 @@
             <!-- TAB 4: RATING -->
             <div id="infoAdminTab" class="admin-section">
                 <div class="section-header"><div class="section-header-left"><i class="fa-solid fa-star" style="color: #ffb700;"></i> REPUTASI RATING WEB</div></div>
-                
                 <div class="rating-summary-box">
                     <div>
                         <div style="font-size: 0.75rem; color: var(--text-gray);">Rata-rata Rating</div>
@@ -464,16 +399,14 @@
                     </div>
                     <div style="font-size: 0.75rem; color: var(--text-gray);" id="totalReviewsCount">0 Ulasan</div>
                 </div>
-
                 <div class="section-header" style="margin-top: 5px;"><div class="section-header-left"><i class="fa-solid fa-comment-dots" style="color: var(--accent-blue);"></i> SARAN & KRITIK USER</div></div>
                 <div class="feedback-list" id="feedbackList"></div>
             </div>
 
             <!-- TAB 5: CONTROL -->
             <div id="controlTab" class="admin-section">
-                
                 <!-- POPUP PIN CONTROL -->
-                <div id="controlAuthOverlay" class="feature-auth-overlay" style="display: flex;">
+                <div id="controlAuthOverlay" class="feature-auth-overlay">
                     <div class="auth-card">
                         <div class="auth-icon" style="background: linear-gradient(135deg, #ff0055, #ffb700);"><i class="fa-solid fa-sliders"></i></div>
                         <div>
@@ -489,80 +422,29 @@
 
                 <div class="control-card">
                     <div class="section-header">
-                        <div class="section-header-left">
-                            <i class="fa-solid fa-power-off" style="color: #ff0055;"></i> AKSES WEB VIEWER
-                        </div>
+                        <div class="section-header-left"><i class="fa-solid fa-power-off" style="color: #ff0055;"></i> AKSES WEB VIEWER</div>
                         <div id="serverStatusBadge" class="status-badge open">ONLINE</div>
                     </div>
-                    <p style="font-size: 0.72rem; color: var(--text-gray);">Tutup akses penuh web viewer dengan tampilan khusus "Server tutup, kembali lagi tahun depan".</p>
                     <div class="btn-group">
-                        <button class="btn-primary" style="background: #00c853;" onclick="setServerAccess(true)">
-                            <i class="fa-solid fa-door-open"></i> OPEN AKSES
-                        </button>
-                        <button class="btn-primary" style="background: #ff0055;" onclick="setServerAccess(false)">
-                            <i class="fa-solid fa-door-closed"></i> CLOSE AKSES
-                        </button>
+                        <button class="btn-primary" style="background: #00c853;" onclick="setServerAccess(true)"><i class="fa-solid fa-door-open"></i> OPEN</button>
+                        <button class="btn-primary" style="background: #ff0055;" onclick="setServerAccess(false)"><i class="fa-solid fa-door-closed"></i> CLOSE</button>
                     </div>
                 </div>
-
-                <hr style="border-color: var(--card-border); margin: 2px 0;">
-
-                <div class="control-card">
-                    <div class="section-header">
-                        <div class="section-header-left">
-                            <i class="fa-solid fa-ghost" style="color: #ff6600;"></i> SPAM HALLOWEEN EMOJI PRANK
-                        </div>
-                    </div>
-                    <p style="font-size: 0.72rem; color: var(--text-gray);">Hujani seluruh layar viewer dengan emoji Halloween acak (berbagai ukuran besar/kecil).</p>
-                    <button class="btn-primary" style="background: linear-gradient(45deg, #ff6600, #9900cc);" onclick="triggerHalloweenPrank()">
-                        <i class="fa-solid fa-spaghetti-monster-flying"></i> SEBAR HUJAN EMOJI HALLOWEEN!
-                    </button>
-                </div>
-
-                <hr style="border-color: var(--card-border); margin: 2px 0;">
-
-                <div class="control-card">
-                    <div class="section-header">
-                        <div class="section-header-left">
-                            <i class="fa-solid fa-palette" style="color: var(--accent-blue);"></i> KONTROL TEMA BACKGROUND VIEWER
-                        </div>
-                    </div>
-                    
-                    <p style="font-size: 0.72rem; color: var(--text-gray);">Quick Theme Switch:</p>
-                    <div class="btn-group">
-                        <button class="btn-secondary" onclick="setViewerThemeMode('dark')">
-                            <i class="fa-solid fa-moon"></i> Dark Mode
-                        </button>
-                        <button class="btn-secondary" style="background: #e6e6e6; color: #000; border-color: #ccc;" onclick="setViewerThemeMode('light')">
-                            <i class="fa-solid fa-sun" style="color: #ff9900;"></i> Light Mode
-                        </button>
-                    </div>
-
-                    <p style="font-size: 0.72rem; color: var(--text-gray); margin-top: 6px;">Custom Color Picker:</p>
-                    <div class="color-picker-box">
-                        <input type="color" id="bgCustomPicker" value="#07040d" onchange="applyCustomBgColor(this.value)">
-                        <span style="font-size: 0.75rem; color: var(--text-gray);">Pilih warna background kustom viewer</span>
-                    </div>
-                </div>
-
             </div>
 
         </div>
-
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // Password Utama Admin Panel
         const ADMIN_SECRET_PIN = "x7K9pQ2m";
 
-        // PIN Khusus Fitur Sesuai Request
         const PIN_UPLOAD_VAULT = "7a8b9c";
         const PIN_LIVE_CHAT   = "7d8e9f";
         const PIN_CONTROL     = "7g8h9i";
 
-        // Status Sesi Keamanan Fitur (Biar gak ketik PIN mulu kalau pindah-pindah tab sebentar)
+        // Status Sesi Kunci Fitur (Diset false biar tiap pindah tab/mau upload harus masukin PIN lagi)
         let isVaultUnlocked = false;
         let isChatUnlocked  = false;
         let isControlUnlocked = false;
@@ -578,26 +460,36 @@
             }
         }
 
-        document.getElementById('adminPinInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') verifyAdminPin();
-        });
-
         function showAdminTab(tabId, btn) {
             document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
 
-            // Cek status kunci fitur saat tab dibuka
-            if (tabId === 'liveChatTab' && !isChatUnlocked) {
+            // Reset dan minta PIN ulang setiap kali tab dipindah/dibuka kembali
+            if (tabId === 'liveChatTab') {
+                isChatUnlocked = false;
                 document.getElementById('chatAuthOverlay').style.display = 'flex';
+                document.getElementById('chatPinInput').value = '';
+            } else {
+                document.getElementById('chatAuthOverlay').style.display = 'none';
             }
-            if (tabId === 'controlTab' && !isControlUnlocked) {
+
+            if (tabId === 'controlTab') {
+                isControlUnlocked = false;
                 document.getElementById('controlAuthOverlay').style.display = 'flex';
+                document.getElementById('controlPinInput').value = '';
+            } else {
+                document.getElementById('controlAuthOverlay').style.display = 'none';
+            }
+
+            if (tabId === 'vaultTab') {
+                // Tiap balik ke tab Vault, status upload dikunci lagi
+                isVaultUnlocked = false;
             }
         }
 
-        // Verifikasi PIN Upload Vault
+        // Verifikasi PIN Upload Vault (Diminta tiap kali mau klik simpan/upload file baru)
         function requestUploadLink() {
             if (!isVaultUnlocked) {
                 document.getElementById('vaultAuthOverlay').style.display = 'flex';
@@ -611,9 +503,9 @@
         function verifyVaultPin() {
             const val = document.getElementById('vaultPinInput').value.trim();
             if (val === PIN_UPLOAD_VAULT) {
-                isVaultUnlocked = true;
+                isVaultUnlocked = true; // Terbuka sekali untuk proses upload ini
                 document.getElementById('vaultAuthOverlay').style.display = 'none';
-                alert('PIN Upload Benar! Silakan masukkan data link.');
+                alert('PIN Benar! Melanjutkan proses simpan file...');
                 executeAddLink();
             } else {
                 alert('PIN Upload Salah!');
@@ -621,7 +513,6 @@
             }
         }
 
-        // Verifikasi PIN Live Chat
         function verifyChatPin() {
             const val = document.getElementById('chatPinInput').value.trim();
             if (val === PIN_LIVE_CHAT) {
@@ -633,7 +524,6 @@
             }
         }
 
-        // Verifikasi PIN Control
         function verifyControlPin() {
             const val = document.getElementById('controlPinInput').value.trim();
             if (val === PIN_CONTROL) {
@@ -649,69 +539,10 @@
             apiKey: "AIzaSyDSftuyANybsSrzM7M8mvLJrd8-HhEn1BU",
             authDomain: "prindapan-games.firebaseapp.com",
             databaseURL: "https://prindapan-games-default-rtdb.firebaseio.com",
-            projectId: "prindapan-games",
-            storageBucket: "prindapan-games.firebasestorage.app",
-            messagingSenderId: "280001797119",
-            appId: "1:280001797119:web:35a8d16371faf98b4c65ca",
-            measurementId: "G-863VM2SE3W"
+            projectId: "prindapan-games"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        const myPresenceRef = db.ref('presence/' + db.ref().push().key);
-        const connectedRef = db.ref('.info/connected');
-        
-        connectedRef.on('value', (snap) => {
-            if (snap.val() === true) {
-                myPresenceRef.onDisconnect().remove();
-                myPresenceRef.set(true);
-            }
-        });
-
-        db.ref('presence').on('value', (snapshot) => {
-            const count = snapshot.numChildren();
-            document.getElementById('onlineCountText').innerText = `${count} Online`;
-        });
-
-        db.ref('serverAccess').on('value', (snapshot) => {
-            const isOpen = snapshot.val() !== false;
-            const badge = document.getElementById('serverStatusBadge');
-            if(isOpen) {
-                badge.innerText = 'ONLINE';
-                badge.className = 'status-badge open';
-            } else {
-                badge.innerText = 'CLOSED';
-                badge.className = 'status-badge closed';
-            }
-        });
-
-        function setServerAccess(isOpen) {
-            const statusText = isOpen ? "MEMBUKA" : "MENUTUP";
-            if (confirm(`Yakin ingin ${statusText} akses web viewer?`)) {
-                db.ref('serverAccess').set(isOpen, (err) => {
-                    if (!err) alert(`Akses web viewer berhasil di-set ke: ${isOpen ? 'OPEN' : 'CLOSE'}`);
-                });
-            }
-        }
-
-        function triggerHalloweenPrank() {
-            if (confirm("Kirim hujan emoji Halloween ke seluruh viewer online?")) {
-                db.ref('activePrank').set({ type: 'halloween_rain', timestamp: Date.now() }, (err) => {
-                    if (!err) alert('Prank Halloween berhasil dikirim!');
-                });
-            }
-        }
-
-        function setViewerThemeMode(mode) {
-            const color = (mode === 'dark') ? '#07040d' : '#ffffff';
-            db.ref('viewerTheme').set({ mode: mode, bgColor: color, timestamp: Date.now() }, (err) => {
-                if(!err) alert(`Theme viewer berhasil diubah ke ${mode.toUpperCase()} mode!`);
-            });
-        }
-
-        function applyCustomBgColor(hexColor) {
-            db.ref('viewerTheme').set({ mode: 'custom', bgColor: hexColor, timestamp: Date.now() });
-        }
 
         function executeAddLink() {
             const title = document.getElementById('linkTitle').value.trim();
@@ -732,6 +563,8 @@
                     document.getElementById('linkTitle').value = '';
                     document.getElementById('linkUrl').value = '';
                     document.getElementById('linkImg').value = '';
+                    // Kunci lagi setelah sukses upload biar next upload wajib PIN lagi
+                    isVaultUnlocked = false; 
                 } else {
                     alert('Gagal menyimpan link!');
                 }
@@ -742,314 +575,27 @@
             const listBox = document.getElementById('vaultListBox');
             listBox.innerHTML = '';
             const links = snapshot.val();
-
             if (!links) {
-                listBox.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-gray); text-align: center; padding: 10px;">Belum ada file yang di-upload ke web viewer.</div>`;
+                listBox.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-gray); text-align: center; padding: 10px;">Belum ada file.</div>`;
                 return;
             }
-
             for (let key in links) {
-                const item = links[key];
-                const uploadDate = item.date || 'Waktu tidak diketahui';
-                const thumbImg = item.img ? item.img : 'https://via.placeholder.com/50';
-                
+                let item = links[key];
                 listBox.innerHTML += `
                     <div class="vault-item">
-                        <img src="${escapeHtml(thumbImg)}" class="vault-item-thumb" alt="thumb" onerror="this.src='https://via.placeholder.com/50'">
+                        <img src="${escapeHtml(item.img || 'https://via.placeholder.com/50')}" class="vault-item-thumb">
                         <div class="vault-item-info">
                             <div class="vault-item-title">${escapeHtml(item.title)}</div>
-                            <div class="vault-item-date"><i class="fa-regular fa-clock"></i> ${escapeHtml(uploadDate)}</div>
+                            <div class="vault-item-date">${escapeHtml(item.date)}</div>
                         </div>
-                        <button class="btn-del-vault" onclick="deleteVaultItem('${key}')" title="Hapus File"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        <button class="btn-del-vault" onclick="deleteVaultItem('${key}')"><i class="fa-solid fa-trash"></i> Hapus</button>
                     </div>
                 `;
             }
         });
 
         function deleteVaultItem(key) {
-            if (confirm('Yakin ingin menghapus file ini dari web viewer?')) {
-                db.ref('links/' + key).remove();
-            }
-        }
-
-        function convertImageToDirectUrl() {
-            const fileInput = document.getElementById('imageInput');
-            if (fileInput.files.length === 0) {
-                alert('Pilih gambar dari perangkat kamu dulu bre!');
-                return;
-            }
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('directUrlResult').value = e.target.result;
-                document.getElementById('uploadResult').style.display = 'flex';
-                alert('Gambar berhasil dikonversi ke Direct Data URL!');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function copyDirectUrl() {
-            const copyText = document.getElementById('directUrlResult');
-            copyText.select();
-            document.execCommand('copy');
-            alert('Direct URL berhasil disalin!');
-        }
-
-        function applyToThumbnail() {
-            const directUrl = document.getElementById('directUrlResult').value;
-            document.getElementById('linkImg').value = directUrl;
-            showAdminTab('vaultTab', document.querySelectorAll('.admin-nav-btn')[0]);
-            alert('Link thumbnail otomatis tertempel di menu Vault!');
-        }
-
-        function getYoutubeId(url) {
-            if (!url) return "";
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : "";
-        }
-
-        function extractYoutubeData() {
-            const inputUrl = document.getElementById('ytUrlInput').value.trim();
-            const videoId = getYoutubeId(inputUrl);
-
-            if (!videoId) {
-                alert('Format link YouTube tidak valid!');
-                return;
-            }
-
-            const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-            document.getElementById('ytThumbResult').value = thumbUrl;
-            
-            const imgPrev = document.getElementById('ytThumbPreviewImage');
-            imgPrev.src = thumbUrl;
-            imgPrev.style.display = 'inline-block';
-
-            fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('ytTitleResult').value = data.title || "Video YouTube (" + videoId + ")";
-                document.getElementById('ytDescResult').value = `Uploader: ${data.author_name || 'YouTube Channel'}`;
-                document.getElementById('ytResult').style.display = 'flex';
-            })
-            .catch(() => {
-                document.getElementById('ytTitleResult').value = "Video YouTube (" + videoId + ")";
-                document.getElementById('ytDescResult').value = "Link: " + inputUrl;
-                document.getElementById('ytResult').style.display = 'flex';
-            });
-        }
-
-        function downloadThumbnail() {
-            const thumbUrl = document.getElementById('ytThumbResult').value;
-            if(!thumbUrl) return;
-            window.open(thumbUrl, '_blank');
-        }
-
-        function applyYtDataToVault() {
-            const title = document.getElementById('ytTitleResult').value;
-            const thumb = document.getElementById('ytThumbResult').value;
-            const url = document.getElementById('ytUrlInput').value;
-
-            document.getElementById('linkTitle').value = title;
-            document.getElementById('linkImg').value = thumb;
-            document.getElementById('linkUrl').value = url;
-
-            showAdminTab('vaultTab', document.querySelectorAll('.admin-nav-btn')[0]);
-            alert('Judul, Thumbnail, dan Link Video berhasil ditempel ke menu Vault!');
-        }
-
-        let currentConvertVideoId = "";
-        function processMediaConvert() {
-            const inputUrl = document.getElementById('convertUrlInput').value.trim();
-            const vId = getYoutubeId(inputUrl);
-            if(!vId) {
-                alert("Masukkan Link YouTube yang valid!");
-                return;
-            }
-            currentConvertVideoId = vId;
-            document.getElementById('convertResultBox').style.display = 'flex';
-        }
-
-        function downloadFormat(type) {
-            if(!currentConvertVideoId) return;
-            const serviceUrl = `https://co.wuk.sh/api/json`;
-            fetch(serviceUrl, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    url: `https://www.youtube.com/watch?v=${currentConvertVideoId}`,
-                    isAudioOnly: (type === 'mp3' || type === 'opus'),
-                    aFormat: type === 'opus' ? 'opus' : 'mp3'
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    window.open(`https://api.cobalt.tools/api/json?url=https://www.youtube.com/watch?v=${currentConvertVideoId}`, '_blank');
-                }
-            })
-            .catch(() => {
-                window.open(`https://loader.to/api/card/?url=https://www.youtube.com/watch?v=${currentConvertVideoId}&f=${type}`, '_blank');
-            });
-        }
-
-        const ADMIN_WA_NUMBER = "6283139352624";
-        let currentStickerDataUrl = "";
-
-        function generateTextSticker() {
-            const text = document.getElementById('stickerTextInput').value.trim();
-            const canvas = document.getElementById('stickerCanvas');
-            const ctx = canvas.getContext('2d');
-
-            if (!text) {
-                alert('Isi teks stiker dulu bre!');
-                return;
-            }
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let fontSize = 38;
-            ctx.font = `bold ${fontSize}px sans-serif`;
-
-            function wrapText(txt, maxW) {
-                const words = txt.split(' ');
-                let lines = [];
-                let currentLine = words[0];
-                for (let i = 1; i < words.length; i++) {
-                    let word = words[i];
-                    if (ctx.measureText(currentLine + " " + word).width < maxW) {
-                        currentLine += " " + word;
-                    } else {
-                        lines.push(currentLine);
-                        currentLine = word;
-                    }
-                }
-                lines.push(currentLine);
-                return lines;
-            }
-
-            let lines = wrapText(text, canvas.width - 80);
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#000000';
-
-            const lineHeight = fontSize * 1.35;
-            const startY = (canvas.height - (lines.length * lineHeight)) / 2 + (lineHeight / 2);
-
-            lines.forEach((line, index) => {
-                ctx.fillText(line, 40, startY + (index * lineHeight));
-            });
-
-            canvas.style.display = 'block';
-            currentStickerDataUrl = canvas.toDataURL('image/png');
-            document.getElementById('stickerResultBox').style.display = 'flex';
-            downloadSticker();
-
-            const waMsg = encodeURIComponent(`Halo, ini hasil stiker teks:\n"${text}"`);
-            window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${waMsg}`, '_blank');
-        }
-
-        function downloadSticker() {
-            if (!currentStickerDataUrl) return;
-            const a = document.createElement('a');
-            a.href = currentStickerDataUrl;
-            a.download = 'stiker-prindapan.png';
-            a.click();
-        }
-
-        function applyStickerToVault() {
-            if (!currentStickerDataUrl) return;
-            document.getElementById('linkImg').value = currentStickerDataUrl;
-            showAdminTab('vaultTab', document.querySelectorAll('.admin-nav-btn')[0]);
-            alert('Stiker berhasil dipasang jadi thumbnail di tab Vault!');
-        }
-
-        function filterLiveChat() {
-            const input = document.getElementById('chatFilterInput').value.toLowerCase();
-            document.querySelectorAll('#adminChatBox .chat-msg-row').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(input) ? 'flex' : 'none';
-            });
-        }
-
-        db.ref('chatMessages').limitToLast(50).on('value', (snapshot) => {
-            const adminBox = document.getElementById('adminChatBox');
-            adminBox.innerHTML = '';
-            const messages = snapshot.val();
-            if (messages) {
-                for (let key in messages) {
-                    const msg = messages[key];
-                    adminBox.innerHTML += `
-                        <div class="chat-msg-row">
-                            <div class="chat-msg-content">
-                                <strong style="color: var(--accent-pink);">${escapeHtml(msg.user || msg.username)}:</strong> 
-                                <span>${escapeHtml(msg.text || msg.message)}</span>
-                            </div>
-                            <button class="btn-delete-action" onclick="deleteChatMessage('${key}')"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    `;
-                }
-                filterLiveChat();
-                adminBox.scrollTop = adminBox.scrollHeight;
-            } else {
-                adminBox.innerHTML = '<p style="font-size:0.75rem; color:var(--text-gray); text-align:center; padding-top:20px;">Belum ada pesan chat.</p>';
-            }
-        });
-
-        function deleteChatMessage(key) {
-            if (confirm("Hapus pesan ini?")) db.ref('chatMessages/' + key).remove();
-        }
-
-        function sendAdminBroadcast() {
-            const msg = document.getElementById('adminBroadcastInput').value.trim();
-            if (!msg) return alert('Ketik pesan broadcast terlebih dahulu!');
-            db.ref('liveBroadcast').set({ text: msg, timestamp: Date.now() }, (err) => {
-                if (!err) {
-                    document.getElementById('adminBroadcastInput').value = '';
-                    alert('Broadcast terkirim!');
-                }
-            });
-        }
-
-        db.ref('ratings').on('value', (snapshot) => {
-            const ratings = snapshot.val();
-            const list = document.getElementById('feedbackList');
-            list.innerHTML = '';
-
-            if(!ratings) {
-                document.getElementById('avgRatingValue').innerHTML = '0.0 <i class="fa-solid fa-star"></i>';
-                document.getElementById('totalReviewsCount').innerText = '0 Ulasan';
-                list.innerHTML = '<p style="font-size:0.75rem; color:var(--text-gray); text-align:center; padding:10px;">Belum ada ulasan.</p>';
-                return;
-            }
-
-            let totalStars = 0, count = 0;
-            for (let key in ratings) {
-                const item = ratings[key];
-                const starVal = item.stars || item.rating || 5;
-                totalStars += starVal;
-                count++;
-
-                let starsHtml = '★'.repeat(starVal);
-                list.innerHTML = `
-                    <div class="feedback-item-row">
-                        <div class="feedback-item-content">
-                            <div class="feedback-stars">${starsHtml}</div>
-                            <div>${escapeHtml(item.feedback || item.comment || item.text)}</div>
-                        </div>
-                        <button class="btn-delete-action" onclick="deleteRatingMessage('${key}')"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                ` + list.innerHTML;
-            }
-            document.getElementById('avgRatingValue').innerHTML = `${(totalStars / count).toFixed(1)} <i class="fa-solid fa-star"></i>`;
-            document.getElementById('totalReviewsCount').innerText = `${count} Ulasan`;
-        });
-
-        function deleteRatingMessage(key) {
-            if (confirm("Hapus ulasan ini?")) db.ref('ratings/' + key).remove();
+            if (confirm('Hapus file ini?')) db.ref('links/' + key).remove();
         }
 
         function escapeHtml(text) {
